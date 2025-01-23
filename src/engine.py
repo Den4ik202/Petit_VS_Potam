@@ -61,6 +61,8 @@ class Engine:
         self.all_sprites.add(self.rule_button)
         self.all_sprites.add(self.setting_button)
         
+        self.screen_game = 0   # текущий экран 0 - начальный, 1 - настройки, 2 - правила, 3 - выбрать как играть, 4 - сама игра, 5 - пауза
+        
     def __del__(self) -> None:
         """"""
         pygame.quit()
@@ -71,21 +73,29 @@ class Engine:
             if event.type == pygame.QUIT:
                 self.game_end = True
             
-            if self.play_button.handle_event(event):
-                self.play_button.target_coor = -self.play_button.original_size[0]
-                self.rule_button.target_coor = WIDTH + self.play_button.original_size[0]
-                self.setting_button.target_coor = -self.setting_button.original_size[0]
-            
-            if self.rule_button.handle_event(event):
-                self.play_button.target_coor = -self.play_button.original_size[0]
-                self.rule_button.target_coor = WIDTH + self.play_button.original_size[0]
-                self.setting_button.target_coor = -self.setting_button.original_size[0]
-            
-            if self.setting_button.handle_event(event):
-                self.play_button.target_coor = -self.play_button.original_size[0]
-                self.rule_button.target_coor = WIDTH + self.play_button.original_size[0]
-                self.setting_button.target_coor = -self.setting_button.original_size[0]
-
+            match self.screen_game:
+                case 0:
+                    if self.play_button.handle_event(event):
+                        self.play_button.target_coor = -self.play_button.original_size[0]
+                        self.rule_button.target_coor = WIDTH + self.play_button.original_size[0]
+                        self.setting_button.target_coor = -self.setting_button.original_size[0]
+                        self.screen_game = 4
+                    
+                    if self.rule_button.handle_event(event):
+                        self.play_button.target_coor = -self.play_button.original_size[0]
+                        self.rule_button.target_coor = WIDTH + self.play_button.original_size[0]
+                        self.setting_button.target_coor = -self.setting_button.original_size[0]
+                        self.screen_game = 2
+                    
+                    if self.setting_button.handle_event(event):
+                        self.play_button.target_coor = -self.play_button.original_size[0]
+                        self.rule_button.target_coor = WIDTH + self.play_button.original_size[0]
+                        self.setting_button.target_coor = -self.setting_button.original_size[0]
+                        self.screen_game = 1
+                case 4:
+                    pass
+                
+                
     
     def __check_logic(self) -> None:
         """"""
