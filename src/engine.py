@@ -5,7 +5,8 @@
 
 import pygame
 import os
-
+from src.setting import *
+from src.button import Button
 
 class Engine:
     """
@@ -43,21 +44,22 @@ class Engine:
             Returns: ...
     """
 
-    def __init__(self, width=800, height=800, fps=60) -> None:
-        self.WIDTH = width
-        self.HEIGHT = height
-        self.FPS = fps
+    def __init__(self) -> None:
 
-        self.BLACK = (0, 0, 0)
-
-        self.screen = pygame.display.set_mode((self.WIDTH, self.HEIGHT))
+        self.screen = pygame.display.set_mode((WIDTH, HEIGHT))
         self.clock = pygame.time.Clock()
 
         self.title = "PetitPotam"
         self.game_end = False
 
-        self.all_sprites = pygame.sprite.Group()
+        self.play_button = Button('play_button.png', 0, HEIGHT // 4)
+        self.rule_button = Button('play_button.png', WIDTH, HEIGHT // 2)
+        self.setting_button = Button('play_button.png', 0,3 * HEIGHT // 4)
         
+        self.all_sprites = pygame.sprite.Group()
+        self.all_sprites.add(self.play_button)
+        self.all_sprites.add(self.rule_button)
+        self.all_sprites.add(self.setting_button)
         
     def __del__(self) -> None:
         """"""
@@ -68,6 +70,21 @@ class Engine:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 self.game_end = True
+            
+            if self.play_button.handle_event(event):
+                self.play_button.target_coor = -self.play_button.original_size[0]
+                self.rule_button.target_coor = WIDTH + self.play_button.original_size[0]
+                self.setting_button.target_coor = -self.setting_button.original_size[0]
+            
+            if self.rule_button.handle_event(event):
+                self.play_button.target_coor = -self.play_button.original_size[0]
+                self.rule_button.target_coor = WIDTH + self.play_button.original_size[0]
+                self.setting_button.target_coor = -self.setting_button.original_size[0]
+            
+            if self.setting_button.handle_event(event):
+                self.play_button.target_coor = -self.play_button.original_size[0]
+                self.rule_button.target_coor = WIDTH + self.play_button.original_size[0]
+                self.setting_button.target_coor = -self.setting_button.original_size[0]
 
     
     def __check_logic(self) -> None:
@@ -76,7 +93,7 @@ class Engine:
 
     def __draw(self) -> None:
         """"""
-        self.screen.fill(self.BLACK)
+        self.screen.fill(BLACK)
 
         self.all_sprites.update()
         self.all_sprites.draw(self.screen)
@@ -91,5 +108,4 @@ class Engine:
             self.__check_events()
             self.__check_logic()
             self.__draw()
-
-            self.clock.tick(self.FPS)
+            self.clock.tick(FPS)
