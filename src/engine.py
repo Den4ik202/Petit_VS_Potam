@@ -51,15 +51,32 @@ class Engine:
 
         self.title = "PetitPotam"
         self.game_end = False
-
-        self.play_button = Button('play_button.png', 0, HEIGHT // 4)
-        self.rule_button = Button('play_button.png', WIDTH, HEIGHT // 2)
-        self.setting_button = Button('play_button.png', 0,3 * HEIGHT // 4)
+        self.main_game = False
+        
+        self.background = pygame.image.load(os.path.abspath('data/background.png'))
+        self.field_game = pygame.image.load(os.path.abspath('data/field_game.png'))
+        
+        # инцилизация всех кнопок
+        self.play_button = Button('play_button.png', 0, HEIGHT // 6)
+        self.rule_button = Button('rule_button.png', WIDTH, HEIGHT // 3)
+        self.setting_button = Button('setting_button.png', 0,  HEIGHT // 2)
+        self.credit_button = Button('credits_button.png', WIDTH, 2 * HEIGHT // 3)
+        self.out_button = Button('out_button.png', 0, 5 * HEIGHT // 6)
+        
+        self.play_in_one_PC_button = Button('play_in_one_PC_button.png', -self.play_button.original_size[0], HEIGHT // 3)
+        self.play_local_inter_burron = Button('play_local_inter_burron.png', WIDTH, 2 * HEIGHT // 3)
+        self.play_in_one_PC_button.target_coor = -self.play_button.original_size[0]
+        self.play_local_inter_burron.target_coor = WIDTH + self.play_button.original_size[0]
         
         self.all_sprites = pygame.sprite.Group()
         self.all_sprites.add(self.play_button)
         self.all_sprites.add(self.rule_button)
         self.all_sprites.add(self.setting_button)
+        self.all_sprites.add(self.credit_button)
+        self.all_sprites.add(self.out_button)
+        
+        self.all_sprites.add(self.play_in_one_PC_button)
+        self.all_sprites.add(self.play_local_inter_burron)
         
         self.screen_game = 0   # текущий экран 0 - начальный, 1 - настройки, 2 - правила, 3 - выбрать как играть, 4 - сама игра, 5 - пауза
         
@@ -73,27 +90,46 @@ class Engine:
             if event.type == pygame.QUIT:
                 self.game_end = True
             
-            match self.screen_game:
-                case 0:
-                    if self.play_button.handle_event(event):
-                        self.play_button.target_coor = -self.play_button.original_size[0]
-                        self.rule_button.target_coor = WIDTH + self.play_button.original_size[0]
-                        self.setting_button.target_coor = -self.setting_button.original_size[0]
-                        self.screen_game = 4
-                    
-                    if self.rule_button.handle_event(event):
-                        self.play_button.target_coor = -self.play_button.original_size[0]
-                        self.rule_button.target_coor = WIDTH + self.play_button.original_size[0]
-                        self.setting_button.target_coor = -self.setting_button.original_size[0]
-                        self.screen_game = 2
-                    
-                    if self.setting_button.handle_event(event):
-                        self.play_button.target_coor = -self.play_button.original_size[0]
-                        self.rule_button.target_coor = WIDTH + self.play_button.original_size[0]
-                        self.setting_button.target_coor = -self.setting_button.original_size[0]
-                        self.screen_game = 1
-                case 4:
-                    pass
+            # =========== начало обработок кнопок ============
+            if self.play_button.handle_event(event):
+                self.play_button.target_coor = -self.play_button.original_size[0]
+                self.rule_button.target_coor = WIDTH + self.rule_button.original_size[0]
+                self.setting_button.target_coor = -self.setting_button.original_size[0]
+                self.credit_button.target_coor = WIDTH + self.credit_button.original_size[0]
+                self.out_button.target_coor = -self.out_button.original_size[0]
+                
+                self.play_in_one_PC_button.target_coor = WIDTH // 2
+                self.play_local_inter_burron.target_coor = WIDTH // 2
+                
+            if self.rule_button.handle_event(event):
+                self.play_button.target_coor = -self.play_button.original_size[0]
+                self.rule_button.target_coor = WIDTH + self.rule_button.original_size[0]
+                self.setting_button.target_coor = -self.setting_button.original_size[0]
+                self.credit_button.target_coor = WIDTH + self.credit_button.original_size[0]
+                self.out_button.target_coor = -self.out_button.original_size[0]
+            
+            if self.setting_button.handle_event(event):
+                self.play_button.target_coor = -self.play_button.original_size[0]
+                self.rule_button.target_coor = WIDTH + self.rule_button.original_size[0]
+                self.setting_button.target_coor = -self.setting_button.original_size[0]
+                self.credit_button.target_coor = WIDTH + self.credit_button.original_size[0]
+                self.out_button.target_coor = -self.out_button.original_size[0]
+            
+            if self.credit_button.handle_event(event):
+                self.play_button.target_coor = -self.play_button.original_size[0]
+                self.rule_button.target_coor = WIDTH + self.rule_button.original_size[0]
+                self.setting_button.target_coor = -self.setting_button.original_size[0]
+                self.credit_button.target_coor = WIDTH + self.credit_button.original_size[0]
+                self.out_button.target_coor = -self.out_button.original_size[0]
+            
+            if self.out_button.handle_event(event):
+                self.game_end = True
+                
+            if self.play_in_one_PC_button.handle_event(event):
+                self.main_game = True
+                self.play_in_one_PC_button.target_coor = -self.play_button.original_size[0]
+                self.play_local_inter_burron.target_coor = WIDTH + self.rule_button.original_size[0]
+            # ==========================================================
                 
                 
     
@@ -103,7 +139,10 @@ class Engine:
 
     def __draw(self) -> None:
         """"""
-        self.screen.fill(BLACK)
+        if self.main_game:
+            self.screen.blit(self.field_game, (0, 0))
+        else:
+            self.screen.blit(self.background, (0, 0))
 
         self.all_sprites.update()
         self.all_sprites.draw(self.screen)
