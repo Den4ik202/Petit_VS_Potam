@@ -8,6 +8,7 @@ import os
 
 from src.settings import *
 from src.button import Button
+from src.robot import Robot
 
 
 class Engine:
@@ -59,8 +60,8 @@ class Engine:
         self.field_game = pygame.image.load(os.path.abspath('data/field_game.png'))
         
         # инцилизация всех кнопок
-        self.play_button = Button('button_play.png', 0, HEIGHT // 6)
-        self.rule_button = Button('button_rule.png', WIDTH, HEIGHT // 3)
+        self.play_button = Button('play_button.png', 0, HEIGHT // 6)
+        self.rule_button = Button('rule_button.png', WIDTH, HEIGHT // 3)
         self.setting_button = Button('setting_button.png', 0,  HEIGHT // 2)
         self.credit_button = Button('credits_button.png', WIDTH, 2 * HEIGHT // 3)
         self.out_button = Button('out_button.png', 0, 5 * HEIGHT // 6)
@@ -70,6 +71,10 @@ class Engine:
         self.play_in_one_PC_button.target_coor = -self.play_button.original_size[0]
         self.play_local_inter_burron.target_coor = WIDTH + self.play_button.original_size[0]
         
+        self.robot_1_player = Robot('robot_player_1.png')
+        self.robot_2_player = Robot('robot_player_2.png')
+        
+        # главыне кнопки
         self.all_sprites = pygame.sprite.Group()
         self.all_sprites.add(self.play_button)
         self.all_sprites.add(self.rule_button)
@@ -77,10 +82,30 @@ class Engine:
         self.all_sprites.add(self.credit_button)
         self.all_sprites.add(self.out_button)
         
+        # второстепенные
         self.all_sprites.add(self.play_in_one_PC_button)
         self.all_sprites.add(self.play_local_inter_burron)
         
-        self.screen_game = 0   # текущий экран 0 - начальный, 1 - настройки, 2 - правила, 3 - выбрать как играть, 4 - сама игра, 5 - пауза
+        # игровые объекты
+        self.all_sprites.add(self.robot_1_player)
+        self.all_sprites.add(self.robot_2_player)
+        self.move_robot_1_player = {(1, 0, 0, 0): lambda: self.robot_1_player.move(0, -1),
+                                    (0, 1, 0, 0): lambda: self.robot_1_player.move(-1, 0),
+                                    (0, 0, 1, 0): lambda: self.robot_1_player.move(0, 1),
+                                    (0, 0, 0, 1): lambda: self.robot_1_player.move(1, 0),
+                                    (1, 1, 0, 0): lambda: self.robot_1_player.move(-1, -1),
+                                    (1, 0, 0, 1): lambda: self.robot_1_player.move(1, -1),
+                                    (0, 1, 1, 0): lambda: self.robot_1_player.move(-1, 1),
+                                    (0, 0, 1, 1): lambda: self.robot_1_player.move(1, 1)}  # WASD
+        
+        self.move_robot_2_player = {(1, 0, 0, 0): lambda: self.robot_2_player.move(0, -1),
+                            (0, 1, 0, 0): lambda: self.robot_2_player.move(-1, 0),
+                            (0, 0, 1, 0): lambda: self.robot_2_player.move(0, 1),
+                            (0, 0, 0, 1): lambda: self.robot_2_player.move(1, 0),
+                            (1, 1, 0, 0): lambda: self.robot_2_player.move(-1, -1),
+                            (1, 0, 0, 1): lambda: self.robot_2_player.move(1, -1),
+                            (0, 1, 1, 0): lambda: self.robot_2_player.move(-1, 1),
+                            (0, 0, 1, 1): lambda: self.robot_2_player.move(1, 1)}  # WASD
         
     def __del__(self) -> None:
         """"""
@@ -131,8 +156,22 @@ class Engine:
                 self.main_game = True
                 self.play_in_one_PC_button.target_coor = -self.play_button.original_size[0]
                 self.play_local_inter_burron.target_coor = WIDTH + self.rule_button.original_size[0]
-            # ==========================================================
-    
+                self.robot_1_player.set_position(200, 200)
+                self.robot_2_player.set_position(100, 100)
+            # ====================== клавиатура ==================================
+
+        if self.main_game:   # движение
+            keys = pygame.key.get_pressed()
+            keys = ((keys[pygame.K_w], keys[pygame.K_a], keys[pygame.K_s], keys[pygame.K_d]), 
+                    (keys[pygame.K_UP], keys[pygame.K_LEFT], keys[pygame.K_DOWN], keys[pygame.K_RIGHT]))
+                
+            if keys[0] in self.move_robot_1_player.keys():
+                self.move_robot_1_player[keys[0]]()
+                
+            if keys[1] in self.move_robot_2_player.keys():
+                self.move_robot_2_player[keys[1]]()
+            
+            
     def __check_logic(self) -> None:
         """"""
         ...

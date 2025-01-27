@@ -1,6 +1,6 @@
 import pygame
 import os
-from src.setting import *
+from src.settings import *
 
 
 class Button(pygame.sprite.Sprite):
