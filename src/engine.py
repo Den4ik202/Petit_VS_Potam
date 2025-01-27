@@ -65,6 +65,8 @@ class Engine:
         self.setting_button = Button('setting_button.png', 0,  HEIGHT // 2)
         self.credit_button = Button('credits_button.png', WIDTH, 2 * HEIGHT // 3)
         self.out_button = Button('out_button.png', 0, 5 * HEIGHT // 6)
+        self.back_button = Button('back_button.png', -self.play_button.original_size[0], 5 * HEIGHT // 6)
+        self.back_button.target_coor = -self.play_button.original_size[0]
         
         self.play_in_one_PC_button = Button('play_in_one_PC_button.png', -self.play_button.original_size[0], HEIGHT // 3)
         self.play_local_inter_burron = Button('play_local_inter_burron.png', WIDTH, 2 * HEIGHT // 3)
@@ -85,6 +87,7 @@ class Engine:
         # второстепенные
         self.all_sprites.add(self.play_in_one_PC_button)
         self.all_sprites.add(self.play_local_inter_burron)
+        self.all_sprites.add(self.back_button)
         
         # игровые объекты
         self.all_sprites.add(self.robot_1_player)
@@ -125,6 +128,7 @@ class Engine:
                 self.credit_button.target_coor = WIDTH + self.credit_button.original_size[0]
                 self.out_button.target_coor = -self.out_button.original_size[0]
                 
+                self.back_button.target_coor = WIDTH // 2
                 self.play_in_one_PC_button.target_coor = WIDTH // 2
                 self.play_local_inter_burron.target_coor = WIDTH // 2
                 
@@ -134,24 +138,41 @@ class Engine:
                 self.setting_button.target_coor = -self.setting_button.original_size[0]
                 self.credit_button.target_coor = WIDTH + self.credit_button.original_size[0]
                 self.out_button.target_coor = -self.out_button.original_size[0]
-            
+
+                self.back_button.target_coor = WIDTH // 2
+                
             if self.setting_button.handle_event(event):
                 self.play_button.target_coor = -self.play_button.original_size[0]
                 self.rule_button.target_coor = WIDTH + self.rule_button.original_size[0]
                 self.setting_button.target_coor = -self.setting_button.original_size[0]
                 self.credit_button.target_coor = WIDTH + self.credit_button.original_size[0]
                 self.out_button.target_coor = -self.out_button.original_size[0]
-            
+
+                self.back_button.target_coor = WIDTH // 2
+                
             if self.credit_button.handle_event(event):
                 self.play_button.target_coor = -self.play_button.original_size[0]
                 self.rule_button.target_coor = WIDTH + self.rule_button.original_size[0]
                 self.setting_button.target_coor = -self.setting_button.original_size[0]
                 self.credit_button.target_coor = WIDTH + self.credit_button.original_size[0]
                 self.out_button.target_coor = -self.out_button.original_size[0]
-            
+
+                self.back_button.target_coor = WIDTH // 2
+                
             if self.out_button.handle_event(event):
                 self.game_end = True
+            
+            if self.back_button.handle_event(event):
+                self.play_in_one_PC_button.target_coor = -self.play_button.original_size[0]
+                self.play_local_inter_burron.target_coor = WIDTH + self.play_button.original_size[0]
+                self.back_button.target_coor = -self.play_button.original_size[0]
                 
+                self.play_button.target_coor = WIDTH // 2
+                self.rule_button.target_coor = WIDTH // 2
+                self.setting_button.target_coor = WIDTH // 2
+                self.credit_button.target_coor = WIDTH // 2
+                self.out_button.target_coor = WIDTH // 2
+            
             if self.play_in_one_PC_button.handle_event(event):
                 self.main_game = True
                 self.play_in_one_PC_button.target_coor = -self.play_button.original_size[0]
@@ -180,6 +201,8 @@ class Engine:
         """"""
         if self.main_game:
             self.screen.blit(self.field_game, (0, 0))
+            text_surface = self.font_text.render(f'{self.robot_1_player.hp} {self.robot_2_player.hp}', False, (0, 0, 0))
+            self.screen.blit(text_surface, (WIDTH // 3,0))
         else:
             self.screen.blit(self.background, (0, 0))
 
@@ -190,8 +213,11 @@ class Engine:
 
     def run(self) -> None:
         pygame.init()
+        pygame.font.init()
         pygame.display.set_caption(self.title)
 
+        self.font_text = pygame.font.SysFont('Comic Sans MS', 30)
+        
         while not self.game_end:
             self.__check_events()
             self.__check_logic()
