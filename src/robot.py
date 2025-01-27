@@ -21,10 +21,10 @@ class Robot(pygame.sprite.Sprite):
         self.rect.x += SPEED * coef_x
         self.rect.y += SPEED * coef_y
         
-        if self.rect.x < 100 or self.rect.x + self.rect.w > 1100:
+        if self.rect.x < 100 or self.rect.x + self.rect.w > 1100:  # или нарушение коллизий
             self.rect.x -= SPEED * coef_x
         
-        if self.rect.y < 100 or self.rect.y + self.rect.h > 700:
+        if self.rect.y < 100 or self.rect.y + self.rect.h > 700:   # или нарушение коллизий
             self.rect.y -= SPEED * coef_y
         
     

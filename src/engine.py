@@ -3,13 +3,18 @@
 """
 
 
+from random import randint
 import pygame
 import os
 
 from src.settings import *
 from src.button import Button
 from src.robot import Robot
-
+from src.saw import Saw
+from src.gun import Gun
+from src.disk import Disk
+from src.laser import Laser
+from src.dirt import Dirt
 
 class Engine:
     """
@@ -54,10 +59,16 @@ class Engine:
 
         self.title = "PetitPotam"
         self.game_end = False
-        self.main_game = False
+        self.main_game = False  # старт главной игры
+        self.state_timer = 0    # 0 - игроки на пустом поле, 1 - появилась анархия, 2 - анархия, 3 - анархия останавливается
+        self.all_weapon = []    # все орудия на поле
         
         self.background = pygame.image.load(os.path.abspath('data/background.png'))
         self.field_game = pygame.image.load(os.path.abspath('data/field_game.png'))
+        
+        # настройка шрифта
+        pygame.font.init()
+        self.font_text = pygame.font.SysFont('Comic Sans MS', 30)
         
         # инцилизация всех кнопок
         self.play_button = Button('play_button.png', 0, HEIGHT // 6)
@@ -177,8 +188,11 @@ class Engine:
                 self.main_game = True
                 self.play_in_one_PC_button.target_coor = -self.play_button.original_size[0]
                 self.play_local_inter_burron.target_coor = WIDTH + self.rule_button.original_size[0]
+                self.back_button.target_coor = -self.play_button.original_size[0]
                 self.robot_1_player.set_position(200, 200)
                 self.robot_2_player.set_position(100, 100)
+                
+                self.last_timer_time = pygame.time.get_ticks()
             # ====================== клавиатура ==================================
 
         if self.main_game:   # движение
@@ -195,8 +209,47 @@ class Engine:
             
     def __check_logic(self) -> None:
         """"""
-        ...
+        if not self.main_game:
+            return
+        
+        current_time = pygame.time.get_ticks()
+        
+        if self.state_timer in [0, 2]:
+            if current_time - self.last_timer_time >= TIMER_INTERVAL:   # прошел интервал времени
+                self.last_timer_time = pygame.time.get_ticks()
 
+                if self.state_timer == 0: # создание анархии
+                    self.create_weapon()
+                else:   # остановить анархию
+                    pass
+                
+                self.state_timer = (self.state_timer + 1) % 4
+        else:
+            if current_time - self.last_timer_time >= TIMER_SEE:   # прошел интервал для просмотра
+                self.last_timer_time = pygame.time.get_ticks()
+                # если 1 - запускаем анархию, 3 - удалить орудия
+                # заспавнить анархию (начальный момент)
+                
+                self.state_timer = (self.state_timer + 1) % 4
+
+        # проверка урона 
+        
+    def create_weapon(self) -> None:
+        count_weapon = randint(1, MAX_COUNT_WEAPON)
+        # создаем что-то и отнимаем count_weapon
+    
+        if randint(0, 100) / 100 >= 0.5 and count_weapon > 0:  # ДИСК
+            state = randint(1, 100)   # одна из вариаций расположений пил
+            
+            if state / 100 >= 0.6:  # первое расположение
+                pass
+            else:                   # второе распаложение
+                pass
+            
+            
+    def kill_sprite(self) -> None:
+        pass
+    
     def __draw(self) -> None:
         """"""
         if self.main_game:
@@ -213,10 +266,7 @@ class Engine:
 
     def run(self) -> None:
         pygame.init()
-        pygame.font.init()
         pygame.display.set_caption(self.title)
-
-        self.font_text = pygame.font.SysFont('Comic Sans MS', 30)
         
         while not self.game_end:
             self.__check_events()
