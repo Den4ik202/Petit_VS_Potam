@@ -5,8 +5,10 @@
 
 import pygame
 import os
-from src.setting import *
+
+from src.settings import *
 from src.button import Button
+
 
 class Engine:
     """
@@ -45,7 +47,7 @@ class Engine:
     """
 
     def __init__(self) -> None:
-
+        """"""
         self.screen = pygame.display.set_mode((WIDTH, HEIGHT))
         self.clock = pygame.time.Clock()
 
@@ -57,8 +59,8 @@ class Engine:
         self.field_game = pygame.image.load(os.path.abspath('data/field_game.png'))
         
         # инцилизация всех кнопок
-        self.play_button = Button('play_button.png', 0, HEIGHT // 6)
-        self.rule_button = Button('rule_button.png', WIDTH, HEIGHT // 3)
+        self.play_button = Button('button_play.png', 0, HEIGHT // 6)
+        self.rule_button = Button('button_rule.png', WIDTH, HEIGHT // 3)
         self.setting_button = Button('setting_button.png', 0,  HEIGHT // 2)
         self.credit_button = Button('credits_button.png', WIDTH, 2 * HEIGHT // 3)
         self.out_button = Button('out_button.png', 0, 5 * HEIGHT // 6)
@@ -130,8 +132,6 @@ class Engine:
                 self.play_in_one_PC_button.target_coor = -self.play_button.original_size[0]
                 self.play_local_inter_burron.target_coor = WIDTH + self.rule_button.original_size[0]
             # ==========================================================
-                
-                
     
     def __check_logic(self) -> None:
         """"""
