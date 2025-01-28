@@ -8,7 +8,8 @@ class Robot(pygame.sprite.Sprite):
         pygame.sprite.Sprite.__init__(self)
         self.image = self.load_image(os.path.abspath(f'data/{iamgeName}'))
         self.rect = self.image.get_rect()
-
+        self.mask = pygame.mask.from_surface(self.image)
+        
         self.rect.x = WIDTH
         self.rect.y = HEIGHT
         self.hp = HP
@@ -21,10 +22,10 @@ class Robot(pygame.sprite.Sprite):
         self.rect.x += SPEED * coef_x
         self.rect.y += SPEED * coef_y
         
-        if self.rect.x < 100 or self.rect.x + self.rect.w > 1100:  # или нарушение коллизий
+        if self.rect.x < 100 or self.rect.x + self.rect.w > 1100:
             self.rect.x -= SPEED * coef_x
         
-        if self.rect.y < 100 or self.rect.y + self.rect.h > 700:   # или нарушение коллизий
+        if self.rect.y < 100 or self.rect.y + self.rect.h > 700:
             self.rect.y -= SPEED * coef_y
         
     

@@ -6,7 +6,7 @@ from src.settings import *
 class Button(pygame.sprite.Sprite):
     def __init__(self, iamgeName: str, x: int, y: int) -> None:
         pygame.sprite.Sprite.__init__(self)
-        self.original_image = self.load_image(os.path.abspath(f'data/{iamgeName}'))
+        self.original_image = self.load_image(os.path.abspath(f'data/button/{iamgeName}'))
         self.image = self.original_image
         self.rect = self.image.get_rect()
 

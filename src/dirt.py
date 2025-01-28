@@ -6,9 +6,10 @@ from src.settings import *
 class Dirt(pygame.sprite.Sprite):
     def __init__(self, iamgeName: str, x: int, y: int) -> None:
         pygame.sprite.Sprite.__init__(self)
-        self.image = self.load_image(os.path.abspath(f'data/{iamgeName}'))
+        self.image = self.load_image(os.path.abspath(f'data/dirt/{iamgeName}'))
         self.rect = self.image.get_rect()
-
+        self.mask = pygame.mask.from_surface(self.image)
+        
         self.rect.x = x
         self.rect.y = y
     
