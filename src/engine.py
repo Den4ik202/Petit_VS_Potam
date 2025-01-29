@@ -81,8 +81,8 @@ class Engine:
         
         self.play_in_one_PC_button = Button('play_in_one_PC_button.png', -self.play_button.original_size[0], HEIGHT // 3)
         self.play_local_inter_burron = Button('play_local_inter_burron.png', WIDTH, 2 * HEIGHT // 3)
-        self.play_in_one_PC_button.target_coor = -self.play_button.original_size[0]
-        self.play_local_inter_burron.target_coor = WIDTH + self.play_button.original_size[0]
+        self.play_in_one_PC_button.set_target(-self.play_button.original_size[0])
+        self.play_local_inter_burron.set_target(WIDTH + self.play_button.original_size[0])
         
         self.robot_1_player = Robot('robot_player_1.png', self.all_sprites)
         self.robot_2_player = Robot('robot_player_2.png', self.all_sprites)
@@ -133,62 +133,62 @@ class Engine:
             
             # =========== начало обработок кнопок ============
             if self.play_button.handle_event(event):
-                self.play_button.target_coor = -self.play_button.original_size[0]
-                self.rule_button.target_coor = WIDTH + self.rule_button.original_size[0]
-                self.setting_button.target_coor = -self.setting_button.original_size[0]
-                self.credit_button.target_coor = WIDTH + self.credit_button.original_size[0]
-                self.out_button.target_coor = -self.out_button.original_size[0]
+                self.play_button.set_target(-self.play_button.original_size[0])
+                self.rule_button.set_target(WIDTH + self.rule_button.original_size[0])
+                self.setting_button.set_target(-self.setting_button.original_size[0])
+                self.credit_button.set_target(WIDTH + self.credit_button.original_size[0])
+                self.out_button.set_target(-self.out_button.original_size[0])
                 
-                self.back_button.target_coor = WIDTH // 2
-                self.play_in_one_PC_button.target_coor = WIDTH // 2
-                self.play_local_inter_burron.target_coor = WIDTH // 2
+                self.back_button.set_target(WIDTH // 2)
+                self.play_in_one_PC_button.set_target(WIDTH // 2)
+                self.play_local_inter_burron.set_target(WIDTH // 2)
                 
             if self.rule_button.handle_event(event):
-                self.play_button.target_coor = -self.play_button.original_size[0]
-                self.rule_button.target_coor = WIDTH + self.rule_button.original_size[0]
-                self.setting_button.target_coor = -self.setting_button.original_size[0]
-                self.credit_button.target_coor = WIDTH + self.credit_button.original_size[0]
-                self.out_button.target_coor = -self.out_button.original_size[0]
+                self.play_button.set_target(-self.play_button.original_size[0])
+                self.rule_button.set_target(WIDTH + self.rule_button.original_size[0])
+                self.setting_button.set_target(-self.setting_button.original_size[0])
+                self.credit_button.set_target(WIDTH + self.credit_button.original_size[0])
+                self.out_button.set_target(-self.out_button.original_size[0])
 
-                self.back_button.target_coor = WIDTH // 2
+                self.back_button.set_target(WIDTH // 2)
                 
             if self.setting_button.handle_event(event):
-                self.play_button.target_coor = -self.play_button.original_size[0]
-                self.rule_button.target_coor = WIDTH + self.rule_button.original_size[0]
-                self.setting_button.target_coor = -self.setting_button.original_size[0]
-                self.credit_button.target_coor = WIDTH + self.credit_button.original_size[0]
-                self.out_button.target_coor = -self.out_button.original_size[0]
+                self.play_button.set_target(-self.play_button.original_size[0])
+                self.rule_button.set_target(WIDTH + self.rule_button.original_size[0])
+                self.setting_button.set_target(-self.setting_button.original_size[0])
+                self.credit_button.set_target(WIDTH + self.credit_button.original_size[0])
+                self.out_button.set_target(-self.out_button.original_size[0])
 
-                self.back_button.target_coor = WIDTH // 2
+                self.back_button.set_target(WIDTH // 2)
                 
             if self.credit_button.handle_event(event):
-                self.play_button.target_coor = -self.play_button.original_size[0]
-                self.rule_button.target_coor = WIDTH + self.rule_button.original_size[0]
-                self.setting_button.target_coor = -self.setting_button.original_size[0]
-                self.credit_button.target_coor = WIDTH + self.credit_button.original_size[0]
-                self.out_button.target_coor = -self.out_button.original_size[0]
+                self.play_button.set_target(-self.play_button.original_size[0])
+                self.rule_button.set_target(WIDTH + self.rule_button.original_size[0])
+                self.setting_button.set_target(-self.setting_button.original_size[0])
+                self.credit_button.set_target(WIDTH + self.credit_button.original_size[0])
+                self.out_button.set_target(-self.out_button.original_size[0])
 
-                self.back_button.target_coor = WIDTH // 2
+                self.back_button.set_target(WIDTH // 2)
                 
             if self.out_button.handle_event(event):
                 self.game_end = True
             
             if self.back_button.handle_event(event):
-                self.play_in_one_PC_button.target_coor = -self.play_button.original_size[0]
-                self.play_local_inter_burron.target_coor = WIDTH + self.play_button.original_size[0]
-                self.back_button.target_coor = -self.play_button.original_size[0]
+                self.play_in_one_PC_button.set_target(-self.play_button.original_size[0])
+                self.play_local_inter_burron.set_target(WIDTH + self.play_button.original_size[0])
+                self.back_button.set_target(-self.play_button.original_size[0])
                 
-                self.play_button.target_coor = WIDTH // 2
-                self.rule_button.target_coor = WIDTH // 2
-                self.setting_button.target_coor = WIDTH // 2
-                self.credit_button.target_coor = WIDTH // 2
-                self.out_button.target_coor = WIDTH // 2
+                self.play_button.set_target(WIDTH // 2)
+                self.rule_button.set_target(WIDTH // 2)
+                self.setting_button.set_target(WIDTH // 2)
+                self.credit_button.set_target(WIDTH // 2)
+                self.out_button.set_target(WIDTH // 2)
             
             if self.play_in_one_PC_button.handle_event(event):
                 self.main_game = True
-                self.play_in_one_PC_button.target_coor = -self.play_button.original_size[0]
-                self.play_local_inter_burron.target_coor = WIDTH + self.rule_button.original_size[0]
-                self.back_button.target_coor = -self.play_button.original_size[0]
+                self.play_in_one_PC_button.set_target(-self.play_button.original_size[0])
+                self.play_local_inter_burron.set_target(WIDTH + self.rule_button.original_size[0])
+                self.back_button.set_target(-self.play_button.original_size[0])
                 self.robot_1_player.set_position(200, 200)
                 self.robot_2_player.set_position(100, 100)
                 
@@ -224,33 +224,53 @@ class Engine:
                 if self.state_timer == 0: # создание анархии
                     self.create_weapon()
                 else:   # остановить анархию
-                    pass
+                    self.stop_anarxiya()
                 
                 self.state_timer = (self.state_timer + 1) % 4
         else:
             if current_time - self.last_timer_time >= TIMER_SEE:   # прошел интервал для просмотра
                 self.last_timer_time = pygame.time.get_ticks()
+                
+                if self.state_timer == 1:
+                    self.start_anarxiya()
+                else:
+                    self.kill_sprite()
                 # если 1 - запускаем анархию, 3 - удалить орудия
                 # заспавнить анархию (начальный момент)
                 
                 self.state_timer = (self.state_timer + 1) % 4
 
-        # проверка урона 
-        
+
+    def start_anarxiya(self) -> None:
+        for s in self.all_sprites:
+            if s.STATUS == 'WEAPON':
+                s.set_mode(True)
+    
+    def stop_anarxiya(self) -> None:
+        for s in self.all_sprites:
+            if s.STATUS == 'WEAPON':
+                s.set_mode(False)
+    
     def create_weapon(self) -> None:
         count_weapon = randint(1, MAX_COUNT_WEAPON)
         # создаем что-то и отнимаем count_weapon
-    
-            
+        
+        self.all_sprites.add(Gun('gun_weapon.png', 0, 600, (1, -1), self.all_sprites))
+        self.all_sprites.add(Gun('gun_weapon.png', 0, 0, (1, 1), self.all_sprites))
+        self.all_sprites.add(Gun('gun_weapon.png', 1000, 0, (-1, 1), self.all_sprites))
+        self.all_sprites.add(Gun('gun_weapon.png', 1000, 600, (-1, -1), self.all_sprites))
             
     def kill_sprite(self) -> None:
-        pass
+        for s in self.all_sprites:
+            if s.STATUS == 'WEAPON':
+                pass
+                s.kill()
     
     def __draw(self) -> None:
         """"""
         if self.main_game:
             self.screen.blit(self.field_game, (0, 0))
-            text_surface = self.font_text.render(f'{self.robot_1_player.hp} {self.robot_2_player.hp}', False, (0, 0, 0))
+            text_surface = self.font_text.render(f'{self.robot_1_player.get_hp()} {self.robot_2_player.get_hp()}', False, (0, 0, 0))
             self.screen.blit(text_surface, (WIDTH // 3,0))
         else:
             self.screen.blit(self.background, (0, 0))

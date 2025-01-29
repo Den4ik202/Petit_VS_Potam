@@ -14,11 +14,8 @@ class Robot(pygame.sprite.Sprite):
         self.rect.x = WIDTH
         self.rect.y = HEIGHT
         self.hp = HP
-        
-    def update(self) -> None:
-        mouse_x, mouse_y = pygame.mouse.get_pos()
-        # наноситься урон
-        
+        self.STATUS = 'PLAYER'
+            
     def move(self, coef_x: int, coef_y: int) -> None:
         self.rect.x += SPEED * coef_x
         self.rect.y += SPEED * coef_y
@@ -29,16 +26,18 @@ class Robot(pygame.sprite.Sprite):
         if self.rect.y < 100 or self.rect.y + self.rect.h > 700 or pygame.sprite.spritecollide(self, [s for s in self.all_sprites if s != self], False, pygame.sprite.collide_mask):
             self.rect.y -= SPEED * coef_y
         
+    def get_hp(self) -> int:
+        return self.hp
     
-    def set_damage(self, damage: int) -> bool:
+    def damage(self, damage: int) -> None:
         self.hp -= damage
-        if self.hp <= 0:
-            return True
-        return False
     
     def set_position(self, x: int, y: int) -> None:
         self.rect.x = x
         self.rect.y = y
+    
+    def get_status(self) -> str:
+        return self.STATUS
     
     def load_image(self, name, colorkey=None) -> pygame.image:
         image = pygame.image.load(name)

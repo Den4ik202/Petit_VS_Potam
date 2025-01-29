@@ -4,15 +4,23 @@ from src.settings import *
 
 
 class Disk(pygame.sprite.Sprite):
-    def __init__(self, iamgeName: str, x: int, y: int) -> None:
+    def __init__(self, x: int, y: int) -> None:
         pygame.sprite.Sprite.__init__(self)
-        self.image = self.load_image(os.path.abspath(f'data/weapon/disk/{iamgeName}'))
+        self.image = self.load_image(os.path.abspath(f'data/weapon/disk/disk_weapon.png'))
         self.rect = self.image.get_rect()
         self.mask = pygame.mask.from_surface(self.image)
         
         self.rect.x = x
         self.rect.y = y
+        self.STATUS = 'WEAPON'
+        self.mode = False      # False - не рабочее True - рабочее 
     
+    
+    def set_mode(self, state_mode: bool) -> None:
+        self.mode = state_mode
+    
+    def get_status(self) -> str:
+        return self.STATUS
     
     def load_image(self, name, colorkey=None) -> pygame.image:
         image = pygame.image.load(name)

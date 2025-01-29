@@ -15,6 +15,7 @@ class Button(pygame.sprite.Sprite):
         self.rect.y = y
         self.original_size = self.image.get_size()
         self.target_coor = WIDTH // 2            # цель, куда двигаться кнопке
+        self.STATUS = 'BUTTON'
         
     def update(self) -> None:
         mouse_x, mouse_y = pygame.mouse.get_pos()
@@ -29,7 +30,18 @@ class Button(pygame.sprite.Sprite):
             return  
         
         self.rect.x += (self.target_coor - self.rect.centerx) * 0.05               # двигаем
-            
+        
+    def set_target(self, coor: int) -> None:
+        self.target_coor = coor
+    
+    def handle_event(self, event) -> bool:
+        if event.type == pygame.MOUSEBUTTONDOWN:
+            if self.rect.collidepoint(event.pos):
+                return True
+        return False
+    
+    def get_status(self) -> str:
+        return self.STATUS
     
     def load_image(self, name, colorkey=None) -> pygame.image:
         image = pygame.image.load(name)
@@ -42,9 +54,3 @@ class Button(pygame.sprite.Sprite):
         else:
             image = image.convert_alpha()
         return image
-    
-    def handle_event(self, event) -> bool:
-        if event.type == pygame.MOUSEBUTTONDOWN:
-            if self.rect.collidepoint(event.pos):
-                return True
-        return False
