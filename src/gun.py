@@ -4,9 +4,9 @@ from src.settings import *
 
 
 class Gun(pygame.sprite.Sprite):
-    def __init__(self, iamgeName: str, x: int, y: int, angl: tuple, all_sprites: pygame.sprite.Group) -> None:
+    def __init__(self, x: int, y: int, angl: tuple, all_sprites: pygame.sprite.Group) -> None:
         pygame.sprite.Sprite.__init__(self)
-        self.image = self.load_image(os.path.abspath(f'data/weapon/gun/{iamgeName}'))
+        self.image = self.load_image(os.path.abspath(f'data/weapon/gun/gun_weapon.png'))
         self.rect = self.image.get_rect()
         self.mask = pygame.mask.from_surface(self.image)
         self.all_sprites = all_sprites
@@ -15,7 +15,6 @@ class Gun(pygame.sprite.Sprite):
         self.rect.y = y
         self.STATUS = 'WEAPON'
         self.mode = False
-        self.all_bullet = []
         self.angl = angl
         self.last_time = 0
         

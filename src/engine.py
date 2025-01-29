@@ -103,23 +103,23 @@ class Engine:
         self.all_sprites.add(self.robot_1_player)
         self.all_sprites.add(self.robot_2_player)
         
-        self.move_robot_1_player = {(1, 0, 0, 0): lambda: self.robot_1_player.move(0, -1),
-                                    (0, 1, 0, 0): lambda: self.robot_1_player.move(-1, 0),
-                                    (0, 0, 1, 0): lambda: self.robot_1_player.move(0, 1),
-                                    (0, 0, 0, 1): lambda: self.robot_1_player.move(1, 0),
-                                    (1, 1, 0, 0): lambda: self.robot_1_player.move(-1, -1),
-                                    (1, 0, 0, 1): lambda: self.robot_1_player.move(1, -1),
-                                    (0, 1, 1, 0): lambda: self.robot_1_player.move(-1, 1),
-                                    (0, 0, 1, 1): lambda: self.robot_1_player.move(1, 1)}  # WASD
+        self.move_robot_1_player = {(1, 0, 0, 0): lambda coef_slow = 1: self.robot_1_player.move(0, -1, coef_slow),
+                                    (0, 1, 0, 0): lambda coef_slow = 1: self.robot_1_player.move(-1, 0, coef_slow),
+                                    (0, 0, 1, 0): lambda coef_slow = 1: self.robot_1_player.move(0, 1, coef_slow),
+                                    (0, 0, 0, 1): lambda coef_slow = 1: self.robot_1_player.move(1, 0, coef_slow),
+                                    (1, 1, 0, 0): lambda coef_slow = 1: self.robot_1_player.move(-1, -1, coef_slow),
+                                    (1, 0, 0, 1): lambda coef_slow = 1: self.robot_1_player.move(1, -1, coef_slow),
+                                    (0, 1, 1, 0): lambda coef_slow = 1: self.robot_1_player.move(-1, 1, coef_slow),
+                                    (0, 0, 1, 1): lambda coef_slow = 1: self.robot_1_player.move(1, 1, coef_slow)}  # WASD
         
-        self.move_robot_2_player = {(1, 0, 0, 0): lambda: self.robot_2_player.move(0, -1),
-                            (0, 1, 0, 0): lambda: self.robot_2_player.move(-1, 0),
-                            (0, 0, 1, 0): lambda: self.robot_2_player.move(0, 1),
-                            (0, 0, 0, 1): lambda: self.robot_2_player.move(1, 0),
-                            (1, 1, 0, 0): lambda: self.robot_2_player.move(-1, -1),
-                            (1, 0, 0, 1): lambda: self.robot_2_player.move(1, -1),
-                            (0, 1, 1, 0): lambda: self.robot_2_player.move(-1, 1),
-                            (0, 0, 1, 1): lambda: self.robot_2_player.move(1, 1)}  # WASD
+        self.move_robot_2_player = {(1, 0, 0, 0): lambda coef_slow = 1: self.robot_2_player.move(0, -1, coef_slow),
+                            (0, 1, 0, 0): lambda coef_slow = 1: self.robot_2_player.move(-1, 0, coef_slow),
+                            (0, 0, 1, 0): lambda coef_slow = 1: self.robot_2_player.move(0, 1, coef_slow),
+                            (0, 0, 0, 1): lambda coef_slow = 1: self.robot_2_player.move(1, 0, coef_slow),
+                            (1, 1, 0, 0): lambda coef_slow = 1: self.robot_2_player.move(-1, -1, coef_slow),
+                            (1, 0, 0, 1): lambda coef_slow = 1: self.robot_2_player.move(1, -1, coef_slow),
+                            (0, 1, 1, 0): lambda coef_slow = 1: self.robot_2_player.move(-1, 1, coef_slow),
+                            (0, 0, 1, 1): lambda coef_slow = 1: self.robot_2_player.move(1, 1, coef_slow)}  # WASD
         
     def __del__(self) -> None:
         """"""
@@ -200,11 +200,14 @@ class Engine:
             keys = ((keys[pygame.K_w], keys[pygame.K_a], keys[pygame.K_s], keys[pygame.K_d]), 
                     (keys[pygame.K_UP], keys[pygame.K_LEFT], keys[pygame.K_DOWN], keys[pygame.K_RIGHT]))
             
+            colision_robot_1 = pygame.sprite.spritecollide(self.robot_1_player, [s for s in self.all_sprites if s.get_status() == 'SUPPORT_WEAPON'], False, pygame.sprite.collide_mask)
+            colision_robot_2 = pygame.sprite.spritecollide(self.robot_2_player, [s for s in self.all_sprites if s.get_status() == 'SUPPORT_WEAPON'], False, pygame.sprite.collide_mask)
+            
             if keys[0] in self.move_robot_1_player.keys():
-                self.move_robot_1_player[keys[0]]()
+                self.move_robot_1_player[keys[0]](SLOWING_SPEED if colision_robot_1 else 1)
                 
             if keys[1] in self.move_robot_2_player.keys():
-                self.move_robot_2_player[keys[1]]()
+                self.move_robot_2_player[keys[1]](SLOWING_SPEED if colision_robot_2 else 1)
             
             
     def __check_logic(self) -> None:
@@ -255,10 +258,12 @@ class Engine:
         count_weapon = randint(1, MAX_COUNT_WEAPON)
         # создаем что-то и отнимаем count_weapon
         
-        self.all_sprites.add(Gun('gun_weapon.png', 0, 600, (1, -1), self.all_sprites))
-        self.all_sprites.add(Gun('gun_weapon.png', 0, 0, (1, 1), self.all_sprites))
-        self.all_sprites.add(Gun('gun_weapon.png', 1000, 0, (-1, 1), self.all_sprites))
-        self.all_sprites.add(Gun('gun_weapon.png', 1000, 600, (-1, -1), self.all_sprites))
+        self.all_sprites.add(Laser(500, 0, (1, -1), self.all_sprites))
+        
+        # self.all_sprites.add(Gun(0, 600, (1, -1), self.all_sprites))
+        # self.all_sprites.add(Gun(0, 0, (1, 1), self.all_sprites))
+        # self.all_sprites.add(Gun(1000, 0, (-1, 1), self.all_sprites))
+        # self.all_sprites.add(Gun(1000, 600, (-1, -1), self.all_sprites))
             
     def kill_sprite(self) -> None:
         for s in self.all_sprites:
