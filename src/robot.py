@@ -4,11 +4,12 @@ from src.settings import *
 
 
 class Robot(pygame.sprite.Sprite):
-    def __init__(self, iamgeName: str) -> None:
+    def __init__(self, iamgeName: str, all_sprites: pygame.sprite.Group) -> None:
         pygame.sprite.Sprite.__init__(self)
         self.image = self.load_image(os.path.abspath(f'data/{iamgeName}'))
         self.rect = self.image.get_rect()
         self.mask = pygame.mask.from_surface(self.image)
+        self.all_sprites = all_sprites
         
         self.rect.x = WIDTH
         self.rect.y = HEIGHT
@@ -22,10 +23,10 @@ class Robot(pygame.sprite.Sprite):
         self.rect.x += SPEED * coef_x
         self.rect.y += SPEED * coef_y
         
-        if self.rect.x < 100 or self.rect.x + self.rect.w > 1100:
+        if self.rect.x < 100 or self.rect.x + self.rect.w > 1100 or pygame.sprite.spritecollide(self, [s for s in self.all_sprites if s != self], False, pygame.sprite.collide_mask):
             self.rect.x -= SPEED * coef_x
         
-        if self.rect.y < 100 or self.rect.y + self.rect.h > 700:
+        if self.rect.y < 100 or self.rect.y + self.rect.h > 700 or pygame.sprite.spritecollide(self, [s for s in self.all_sprites if s != self], False, pygame.sprite.collide_mask):
             self.rect.y -= SPEED * coef_y
         
     

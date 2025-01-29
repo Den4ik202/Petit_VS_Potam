@@ -9,7 +9,8 @@ class Button(pygame.sprite.Sprite):
         self.original_image = self.load_image(os.path.abspath(f'data/button/{iamgeName}'))
         self.image = self.original_image
         self.rect = self.image.get_rect()
-
+        self.mask = pygame.mask.from_surface(self.image)
+        
         self.rect.x = x
         self.rect.y = y
         self.original_size = self.image.get_size()

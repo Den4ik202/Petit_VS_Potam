@@ -65,7 +65,7 @@ class Engine:
         
         self.background = pygame.image.load(os.path.abspath('data/background.png'))
         self.field_game = pygame.image.load(os.path.abspath('data/field_game.png'))
-        
+        self.all_sprites = pygame.sprite.Group()
         # настройка шрифта
         pygame.font.init()
         self.font_text = pygame.font.SysFont('Comic Sans MS', 30)
@@ -84,11 +84,10 @@ class Engine:
         self.play_in_one_PC_button.target_coor = -self.play_button.original_size[0]
         self.play_local_inter_burron.target_coor = WIDTH + self.play_button.original_size[0]
         
-        self.robot_1_player = Robot('robot_player_1.png')
-        self.robot_2_player = Robot('robot_player_2.png')
+        self.robot_1_player = Robot('robot_player_1.png', self.all_sprites)
+        self.robot_2_player = Robot('robot_player_2.png', self.all_sprites)
         
         # главыне кнопки
-        self.all_sprites = pygame.sprite.Group()
         self.all_sprites.add(self.play_button)
         self.all_sprites.add(self.rule_button)
         self.all_sprites.add(self.setting_button)
@@ -103,6 +102,7 @@ class Engine:
         # игровые объекты
         self.all_sprites.add(self.robot_1_player)
         self.all_sprites.add(self.robot_2_player)
+        
         self.move_robot_1_player = {(1, 0, 0, 0): lambda: self.robot_1_player.move(0, -1),
                                     (0, 1, 0, 0): lambda: self.robot_1_player.move(-1, 0),
                                     (0, 0, 1, 0): lambda: self.robot_1_player.move(0, 1),
@@ -199,7 +199,7 @@ class Engine:
             keys = pygame.key.get_pressed()
             keys = ((keys[pygame.K_w], keys[pygame.K_a], keys[pygame.K_s], keys[pygame.K_d]), 
                     (keys[pygame.K_UP], keys[pygame.K_LEFT], keys[pygame.K_DOWN], keys[pygame.K_RIGHT]))
-                
+            
             if keys[0] in self.move_robot_1_player.keys():
                 self.move_robot_1_player[keys[0]]()
                 
@@ -209,6 +209,9 @@ class Engine:
             
     def __check_logic(self) -> None:
         """"""
+        colision_robot_1 = pygame.sprite.spritecollide(self.robot_1_player, [s for s in self.all_sprites if s != self.robot_1_player], False, pygame.sprite.collide_mask)
+        colision_robot_2 = pygame.sprite.spritecollide(self.robot_2_player, [s for s in self.all_sprites if s != self.robot_2_player], False, pygame.sprite.collide_mask)
+
         if not self.main_game:
             return
         
@@ -238,13 +241,6 @@ class Engine:
         count_weapon = randint(1, MAX_COUNT_WEAPON)
         # создаем что-то и отнимаем count_weapon
     
-        if randint(0, 100) / 100 >= 0.5 and count_weapon > 0:  # ДИСК
-            state = randint(1, 100)   # одна из вариаций расположений пил
-            
-            if state / 100 >= 0.6:  # первое расположение
-                pass
-            else:                   # второе распаложение
-                pass
             
             
     def kill_sprite(self) -> None:
@@ -268,6 +264,7 @@ class Engine:
         pygame.init()
         pygame.display.set_caption(self.title)
         
+
         while not self.game_end:
             self.__check_events()
             self.__check_logic()
