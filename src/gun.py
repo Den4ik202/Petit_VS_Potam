@@ -7,6 +7,9 @@ class Gun(pygame.sprite.Sprite):
     def __init__(self, x: int, y: int, angl: tuple, all_sprites: pygame.sprite.Group) -> None:
         pygame.sprite.Sprite.__init__(self)
         self.image = self.load_image(os.path.abspath(f'data/weapon/gun/gun_weapon.png'))
+        rotate = {(-1, -1): 270+45, (1, -1): 270-45, (1, 1): 90+45, (-1, 1): 45}
+        self.image = pygame.transform.rotate(self.image, rotate[angl])
+        
         self.rect = self.image.get_rect()
         self.mask = pygame.mask.from_surface(self.image)
         self.all_sprites = all_sprites
