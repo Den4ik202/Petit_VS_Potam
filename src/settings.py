@@ -18,10 +18,11 @@ DAMAGE_GUN = 20
 SPEED_BULLET = 5
 COOLDOWN_GUN = 500
 # ================== лазер
-DAMAGE_LASER = 5
+DAMAGE_LASER = 10
 COOLDOWN_LASER = 100
 # ================== пила (диск)
-DAMAGE_SAW = 10
+DAMAGE_DISK = 5
+COOLDOWN_DISK = 50
 # ================== цвета
 BLACK = (0, 0, 0)
 WHITE = (255, 255, 255)

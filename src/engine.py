@@ -258,7 +258,10 @@ class Engine:
         count_weapon = randint(1, MAX_COUNT_WEAPON)
         # создаем что-то и отнимаем count_weapon
         
-        self.all_sprites.add(Laser(500, 0, (1, -1), self.all_sprites))
+        self.all_sprites.add(Disk(500, 500, self.all_sprites))
+        
+        
+        #self.all_sprites.add(Laser(500, 0, (1, -1), self.all_sprites))
         
         # self.all_sprites.add(Gun(0, 600, (1, -1), self.all_sprites))
         # self.all_sprites.add(Gun(0, 0, (1, 1), self.all_sprites))
