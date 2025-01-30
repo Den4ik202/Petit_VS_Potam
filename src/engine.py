@@ -295,7 +295,7 @@ class Engine:
         count_weapon -= 1
         
         if not count_weapon:  # больше нельзя ставить
-            return
+            return self.create_dirt()
 
         for x, y, angl in COORDINATE_GUN:
             if randint(0, 100) <= CHANCE_APPEARANCE_GUN:
@@ -303,12 +303,25 @@ class Engine:
         count_weapon -= 1
         
         if not count_weapon:  # больше нельзя ставить
-            return
+            return self.create_dirt()
         
         for x, y, angl in COORDINATE_LASER:
             if randint(0, 100) <= CHANCE_APPEARANCE_LASER:
                 self.all_sprites.add(Laser(x, y, angl, self.all_sprites))
         count_weapon -= 1
+        
+        # if not count_weapon:  # больше нельзя ставить
+        #     return self.create_dirt()
+        
+        # for x, y, angl in COORDINATE_SAW:
+        #     if randint(0, 100) <= CHANCE_APPEARANCE_SAW:
+        #         self.all_sprites.add(Laser(x, y, angl, self.all_sprites))
+        self.create_dirt()
+
+    def create_dirt(self) -> None:
+        count_dirt = randint(0, MAX_COUNT_DIRT)
+        for _ in range(count_dirt):
+            self.all_sprites.add(Dirt(randint(200, 800), randint(200, 500)))
 
         # self.all_sprites.add(Dirt(500, 500))
         # self.all_sprites.add(Saw(500, 500, self.all_sprites))
