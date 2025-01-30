@@ -23,6 +23,9 @@ COOLDOWN_LASER = 100
 # ================== пила (диск)
 DAMAGE_DISK = 5
 COOLDOWN_DISK = 50
+# ================== пила (диск)
+DAMAGE_SAW = 5
+COOLDOWN_SAW = 50
 # ================== цвета
 BLACK = (0, 0, 0)
 WHITE = (255, 255, 255)

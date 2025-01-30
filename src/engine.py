@@ -200,8 +200,8 @@ class Engine:
             keys = ((keys[pygame.K_w], keys[pygame.K_a], keys[pygame.K_s], keys[pygame.K_d]), 
                     (keys[pygame.K_UP], keys[pygame.K_LEFT], keys[pygame.K_DOWN], keys[pygame.K_RIGHT]))
             
-            colision_robot_1 = pygame.sprite.spritecollide(self.robot_1_player, [s for s in self.all_sprites if s.get_status() == 'SUPPORT_WEAPON'], False, pygame.sprite.collide_mask)
-            colision_robot_2 = pygame.sprite.spritecollide(self.robot_2_player, [s for s in self.all_sprites if s.get_status() == 'SUPPORT_WEAPON'], False, pygame.sprite.collide_mask)
+            colision_robot_1 = pygame.sprite.spritecollide(self.robot_1_player, [s for s in self.all_sprites if s.get_status() in ['SUPPORT_WEAPON', 'SUPPORT']], False, pygame.sprite.collide_mask)
+            colision_robot_2 = pygame.sprite.spritecollide(self.robot_2_player, [s for s in self.all_sprites if s.get_status() in ['SUPPORT_WEAPON', 'SUPPORT']], False, pygame.sprite.collide_mask)
             
             if keys[0] in self.move_robot_1_player.keys():
                 self.move_robot_1_player[keys[0]](SLOWING_SPEED if colision_robot_1 else 1)
@@ -246,23 +246,23 @@ class Engine:
 
     def start_anarxiya(self) -> None:
         for s in self.all_sprites:
-            if s.STATUS == 'WEAPON':
+            if s.get_status() == 'WEAPON':
                 s.set_mode(True)
     
     def stop_anarxiya(self) -> None:
         for s in self.all_sprites:
-            if s.STATUS == 'WEAPON':
+            if s.get_status() == 'WEAPON':
                 s.set_mode(False)
     
     def create_weapon(self) -> None:
         count_weapon = randint(1, MAX_COUNT_WEAPON)
         # создаем что-то и отнимаем count_weapon
         
-        self.all_sprites.add(Disk(500, 500, self.all_sprites))
         
-        
-        #self.all_sprites.add(Laser(500, 0, (1, -1), self.all_sprites))
-        
+        self.all_sprites.add(Dirt(500, 500))
+        # self.all_sprites.add(Saw(500, 500, self.all_sprites))
+        # self.all_sprites.add(Disk(500, 500, self.all_sprites))
+        # self.all_sprites.add(Laser(500, 0, (1, -1), self.all_sprites))
         # self.all_sprites.add(Gun(0, 600, (1, -1), self.all_sprites))
         # self.all_sprites.add(Gun(0, 0, (1, 1), self.all_sprites))
         # self.all_sprites.add(Gun(1000, 0, (-1, 1), self.all_sprites))
@@ -270,7 +270,7 @@ class Engine:
             
     def kill_sprite(self) -> None:
         for s in self.all_sprites:
-            if s.STATUS == 'WEAPON':
+            if s.get_status() in ['WEAPON', 'SUPPORT']:
                 pass
                 s.kill()
     

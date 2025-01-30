@@ -20,7 +20,7 @@ class Robot(pygame.sprite.Sprite):
         self.rect.x += SPEED * coef_x * coef_slow
         self.rect.y += SPEED * coef_y * coef_slow
         
-        collision = pygame.sprite.spritecollide(self, [s for s in self.all_sprites if s != self and s.get_status() != 'SUPPORT_WEAPON'], False, pygame.sprite.collide_mask)
+        collision = pygame.sprite.spritecollide(self, [s for s in self.all_sprites if s != self and s.get_status() not in ['SUPPORT_WEAPON', 'SUPPORT']], False, pygame.sprite.collide_mask)
         
         if self.rect.x < 100 or self.rect.x + self.rect.w > 1100 or collision:
             self.rect.x -= SPEED * coef_x * coef_slow

@@ -29,7 +29,6 @@ class Disk(pygame.sprite.Sprite):
     def set_mode(self, state_mode: bool) -> None:
         self.mode = state_mode
         if self.mode:
-            print(self.rect.center)
             self.saw_disk = Saw_Disk(self.rect.center, self.all_sprites)
             self.all_sprites.add(self.saw_disk)
         else:
