@@ -316,6 +316,13 @@ class Engine:
 
                 self.state_timer = (self.state_timer + 1) % 4
 
+        # ==================== ПРОВЕРКА НА ПРОИГРЫШ =====================
+        if self.robot_1_player.get_hp() <= 0 or self.robot_2_player.get_hp() <= 0:
+                self.pause_game = True
+                self.set_pause_sprits(True)
+                self.pause_button.set_target(WIDTH + self.pause_home_button.original_size[0])
+                self.pause_home_button.set_target(WIDTH // 2)
+        
     def start_anarxiya(self) -> None:
         for s in self.all_sprites:
             if s.get_status() == 'WEAPON':
@@ -329,7 +336,7 @@ class Engine:
     def create_weapon(self) -> None:
         count_weapon = randint(1, MAX_COUNT_WEAPON)
         position = randint(1, 5)
-
+        
         for x, y in COORDINATE_DISK[position]:
             if randint(0, 100) <= CHANCE_APPEARANCE_DISK:
                 self.all_sprites.add(Disk(x, y, self.all_sprites))
