@@ -15,16 +15,18 @@ class Disk(pygame.sprite.Sprite):
         self.rect.y = y
         self.STATUS = 'WEAPON'
         self.mode = False
+        self.state_pause = False
         self.saw_disk = None
         self.last_time = 0
         
-    def update(self):
-        if self.mode:
-            current_time = pygame.time.get_ticks()
-            if current_time - self.last_time >= COOLDOWN_DISK:
-                self.last_time = pygame.time.get_ticks()
-                self.saw_disk.damage()
+    def update(self) -> None:
+        if self.state_pause or not self.mode:
+            return
         
+        current_time = pygame.time.get_ticks()
+        if current_time - self.last_time >= COOLDOWN_DISK:
+            self.last_time = pygame.time.get_ticks()
+            self.saw_disk.damage()
         
     def set_mode(self, state_mode: bool) -> None:
         self.mode = state_mode
@@ -36,7 +38,10 @@ class Disk(pygame.sprite.Sprite):
             
     def get_status(self) -> str:
         return self.STATUS
-    
+
+    def pause(self, pause: bool) -> None:
+        self.state_pause = pause
+
     def load_image(self, name, colorkey=None) -> pygame.image:
         image = pygame.image.load(name)
 
@@ -61,8 +66,11 @@ class Saw_Disk(pygame.sprite.Sprite):
         
         self.rect.center = center
         self.STATUS = 'SUPPORT_WEAPON'
+        self.state_pause = False
     
     def damage(self) -> None:
+        if self.state_pause:
+            return
         robots = pygame.sprite.spritecollide(self, [s for s in self.all_sprites if s.get_status() == 'PLAYER'], False, pygame.sprite.collide_mask)
         
         if not robots:
@@ -73,7 +81,10 @@ class Saw_Disk(pygame.sprite.Sprite):
     
     def get_status(self) -> str:
         return self.STATUS
-    
+
+    def pause(self, pause: bool) -> None:
+        self.state_pause = pause
+
     def load_image(self, name, colorkey=None) -> pygame.image:
         image = pygame.image.load(name)
 

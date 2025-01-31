@@ -17,16 +17,19 @@ class Laser(pygame.sprite.Sprite):
         self.rect.y = y
         self.STATUS = 'WEAPON'
         self.mode = False
+        self.state_pause = False
         self.angl = angl
         self.laser = None
         self.last_time = 0
         
-    def update(self):
-        if self.mode:
-            current_time = pygame.time.get_ticks()
-            if current_time - self.last_time >= COOLDOWN_LASER:
-                self.last_time = pygame.time.get_ticks()
-                self.laser.damage()
+    def update(self) -> None:
+        if self.state_pause or not self.mode:
+            return
+        
+        current_time = pygame.time.get_ticks()
+        if current_time - self.last_time >= COOLDOWN_LASER:
+            self.last_time = pygame.time.get_ticks()
+            self.laser.damage()
         
         
     def set_mode(self, state_mode: bool) -> None:
@@ -39,6 +42,9 @@ class Laser(pygame.sprite.Sprite):
             
     def get_status(self) -> str:
         return self.STATUS
+    
+    def pause(self, pause: bool) -> None:
+        self.state_pause = pause
     
     def load_image(self, name, colorkey=None) -> pygame.image:
         image = pygame.image.load(name)
@@ -73,10 +79,13 @@ class Ray(pygame.sprite.Sprite):
         if angl == (-1, -1):
             self.rect.y = y - self.rect.h + 100
             self.rect.x = x - self.rect.w + 100
-            
+        
+        self.state_pause = False
         self.STATUS = 'SUPPORT_WEAPON'
         
     def damage(self) -> None:
+        if self.state_pause:
+            return
         robots = pygame.sprite.spritecollide(self, [s for s in self.all_sprites if s.get_status() == 'PLAYER'], False, pygame.sprite.collide_mask)
         
         if not robots:
@@ -87,7 +96,10 @@ class Ray(pygame.sprite.Sprite):
     
     def get_status(self) -> str:
         return self.STATUS
-    
+
+    def pause(self, pause: bool) -> None:
+        self.state_pause = pause
+
     def load_image(self, name, colorkey=None) -> pygame.image:
         image = pygame.image.load(name)
 

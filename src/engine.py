@@ -61,9 +61,9 @@ class Engine:
         self.title = "PetitPotam"
         self.game_end = False
         self.main_game = False  # старт главной игры
+        self.pause_game = False
         # 0 - игроки на пустом поле, 1 - появилась анархия, 2 - анархия, 3 - анархия останавливается
         self.state_timer = 0
-        self.all_weapon = []    # все орудия на поле
 
         self.background = pygame.image.load(
             os.path.abspath('data/background.png'))
@@ -83,16 +83,29 @@ class Engine:
         self.out_button = Button('out_button.png', 0, 5 * HEIGHT // 6)
         self.back_button = Button(
             'back_button.png', -self.play_button.original_size[0], 5 * HEIGHT // 6)
-        self.back_button.target_coor = -self.play_button.original_size[0]
+        self.back_button.set_target(-self.play_button.original_size[0])
 
         self.play_in_one_PC_button = Button(
             'play_in_one_PC_button.png', -self.play_button.original_size[0], HEIGHT // 3)
         self.play_local_inter_burron = Button(
             'play_local_inter_burron.png', WIDTH, 2 * HEIGHT // 3)
+        
         self.play_in_one_PC_button.set_target(
             -self.play_button.original_size[0])
         self.play_local_inter_burron.set_target(
             WIDTH + self.play_button.original_size[0])
+        
+        self.pause_button = Button('pause_button.png', WIDTH, 0)
+        self.pause_button.set_target(
+            WIDTH + self.pause_button.original_size[0])
+        
+        self.pause_play_button = Button('pause_play_button.png', -100, HEIGHT // 3)
+        self.pause_play_button.set_target(
+            -self.pause_play_button.original_size[0])
+        
+        self.pause_home_button = Button('pause_home_button.png', WIDTH, 2 * HEIGHT // 3)
+        self.pause_home_button.set_target(
+            WIDTH + self.pause_home_button.original_size[0])
 
         self.robot_1_player = Robot('robot_player_1.png', self.all_sprites)
         self.robot_2_player = Robot('robot_player_2.png', self.all_sprites)
@@ -108,6 +121,9 @@ class Engine:
         self.all_sprites.add(self.play_in_one_PC_button)
         self.all_sprites.add(self.play_local_inter_burron)
         self.all_sprites.add(self.back_button)
+        self.all_sprites.add(self.pause_button)
+        self.all_sprites.add(self.pause_play_button)
+        self.all_sprites.add(self.pause_home_button)
 
         # игровые объекты
         self.all_sprites.add(self.robot_1_player)
@@ -210,6 +226,8 @@ class Engine:
 
             if self.play_in_one_PC_button.handle_event(event):
                 self.main_game = True
+                self.pause_button.set_target(
+                    WIDTH-self.pause_button.original_size[0])
                 self.play_in_one_PC_button.set_target(
                     -self.play_button.original_size[0])
                 self.play_local_inter_burron.set_target(
@@ -219,9 +237,38 @@ class Engine:
                 self.robot_2_player.set_position(100, 100)
 
                 self.last_timer_time = pygame.time.get_ticks()
+
+            if self.pause_button.handle_event(event):
+                self.pause_game = True
+                self.set_pause_sprits(True)
+                self.pause_play_button.set_target(WIDTH // 2)
+                self.pause_home_button.set_target(WIDTH // 2)
+            
+            if self.pause_play_button.handle_event(event):
+                self.pause_game = False
+                self.set_pause_sprits(False)
+                self.pause_play_button.set_target(-self.pause_play_button.original_size[0])
+                self.pause_home_button.set_target(WIDTH + self.pause_home_button.original_size[0])
+            
+            if self.pause_home_button.handle_event(event):
+                self.pause_game = False
+                self.set_pause_sprits(False)
+                self.kill_sprite(('WEAPON', 'SUPPORT_WEAPON', 'SUPPORT'))
+                self.main_game = False
+                self.play_button.set_target(WIDTH // 2)
+                self.rule_button.set_target(WIDTH // 2)
+                self.setting_button.set_target(WIDTH // 2)
+                self.credit_button.set_target(WIDTH // 2)
+                self.out_button.set_target(WIDTH // 2)
+                
+                self.robot_1_player.set_position(WIDTH, HEIGHT)
+                self.robot_2_player.set_position(WIDTH, HEIGHT)
+                self.pause_button.set_target(WIDTH + self.pause_home_button.original_size[0])
+                self.pause_play_button.set_target(-self.pause_play_button.original_size[0])
+                self.pause_home_button.set_target(WIDTH + self.pause_home_button.original_size[0])
             # ====================== клавиатура ==================================
 
-        if self.main_game:   # движение
+        if self.main_game and not self.pause_game:   # движение
             keys = pygame.key.get_pressed()
             keys = ((keys[pygame.K_w], keys[pygame.K_a], keys[pygame.K_s], keys[pygame.K_d]),
                     (keys[pygame.K_UP], keys[pygame.K_LEFT], keys[pygame.K_DOWN], keys[pygame.K_RIGHT]))
@@ -241,12 +288,7 @@ class Engine:
 
     def __check_logic(self) -> None:
         """"""
-        colision_robot_1 = pygame.sprite.spritecollide(self.robot_1_player, [
-                                                       s for s in self.all_sprites if s != self.robot_1_player], False, pygame.sprite.collide_mask)
-        colision_robot_2 = pygame.sprite.spritecollide(self.robot_2_player, [
-                                                       s for s in self.all_sprites if s != self.robot_2_player], False, pygame.sprite.collide_mask)
-
-        if not self.main_game:
+        if not self.main_game or self.pause_game:
             return
 
         current_time = pygame.time.get_ticks()
@@ -268,7 +310,7 @@ class Engine:
                 if self.state_timer == 1:
                     self.start_anarxiya()
                 else:
-                    self.kill_sprite()
+                    self.kill_sprite(('WEAPON', 'SUPPORT'))
                 # если 1 - запускаем анархию, 3 - удалить орудия
                 # заспавнить анархию (начальный момент)
 
@@ -287,13 +329,12 @@ class Engine:
     def create_weapon(self) -> None:
         count_weapon = randint(1, MAX_COUNT_WEAPON)
         position = randint(1, 5)
-        
-        print(count_weapon)
-        
+
         for x, y in COORDINATE_DISK[position]:
-            self.all_sprites.add(Disk(x, y, self.all_sprites))
+            if randint(0, 100) <= CHANCE_APPEARANCE_DISK:
+                self.all_sprites.add(Disk(x, y, self.all_sprites))
         count_weapon -= 1
-        
+
         if not count_weapon:  # больше нельзя ставить
             return self.create_dirt()
 
@@ -301,21 +342,15 @@ class Engine:
             if randint(0, 100) <= CHANCE_APPEARANCE_GUN:
                 self.all_sprites.add(Gun(x, y, angl, self.all_sprites))
         count_weapon -= 1
-        
+
         if not count_weapon:  # больше нельзя ставить
             return self.create_dirt()
-        
+
         for x, y, angl in COORDINATE_LASER:
             if randint(0, 100) <= CHANCE_APPEARANCE_LASER:
                 self.all_sprites.add(Laser(x, y, angl, self.all_sprites))
         count_weapon -= 1
-        
-        # if not count_weapon:  # больше нельзя ставить
-        #     return self.create_dirt()
-        
-        # for x, y, angl in COORDINATE_SAW:
-        #     if randint(0, 100) <= CHANCE_APPEARANCE_SAW:
-        #         self.all_sprites.add(Laser(x, y, angl, self.all_sprites))
+
         self.create_dirt()
 
     def create_dirt(self) -> None:
@@ -323,20 +358,16 @@ class Engine:
         for _ in range(count_dirt):
             self.all_sprites.add(Dirt(randint(200, 800), randint(200, 500)))
 
-        # self.all_sprites.add(Dirt(500, 500))
-        # self.all_sprites.add(Saw(500, 500, self.all_sprites))
-        # self.all_sprites.add(Disk(500, 500, self.all_sprites))
-        # self.all_sprites.add(Laser(500, 0, (1, -1), self.all_sprites))
-        # self.all_sprites.add(Gun(0, 600, (1, -1), self.all_sprites))
-        # self.all_sprites.add(Gun(0, 0, (1, 1), self.all_sprites))
-        # self.all_sprites.add(Gun(1000, 0, (-1, 1), self.all_sprites))
-        # self.all_sprites.add(Gun(1000, 600, (-1, -1), self.all_sprites))
-
-    def kill_sprite(self) -> None:
+    def kill_sprite(self, sprite_kill: tuple) -> None:
         for s in self.all_sprites:
-            if s.get_status() in ['WEAPON', 'SUPPORT']:
+            if s.get_status() in sprite_kill:
                 pass
                 s.kill()
+
+    def set_pause_sprits(self, state_pause: bool) -> None:
+        for sprite in self.all_sprites:
+            if sprite.get_status() in ['WEAPON', 'SUPPORT_WEAPON']:
+                sprite.pause(state_pause)
 
     def __draw(self) -> None:
         """"""

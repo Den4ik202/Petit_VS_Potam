@@ -41,6 +41,7 @@ class Robot(pygame.sprite.Sprite):
     def set_position(self, x: int, y: int) -> None:
         self.rect.x = x
         self.rect.y = y
+        self.hp = HP
     
     def get_status(self) -> str:
         return self.STATUS

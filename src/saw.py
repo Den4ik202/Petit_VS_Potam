@@ -15,17 +15,19 @@ class Saw(pygame.sprite.Sprite):
         self.rect.y = y
         self.STATUS = 'WEAPON'
         self.mode = False
+        self.state_pause = False
         self.saw_damage = None
         self.last_time = 0
         
-    def update(self):
-        if self.mode:
-            current_time = pygame.time.get_ticks()
-            if current_time - self.last_time >= COOLDOWN_DISK:
-                self.last_time = pygame.time.get_ticks()
-                self.saw_damage.damage()
+    def update(self) -> None:
+        if self.state_pause or not self.mode:
+            return
         
-        
+        current_time = pygame.time.get_ticks()
+        if current_time - self.last_time >= COOLDOWN_DISK:
+            self.last_time = pygame.time.get_ticks()
+            self.saw_damage.damage()
+
     def set_mode(self, state_mode: bool) -> None:
         self.mode = state_mode
         if self.mode:
@@ -36,6 +38,9 @@ class Saw(pygame.sprite.Sprite):
             
     def get_status(self) -> str:
         return self.STATUS
+
+    def pause(self, pause: bool) -> None:
+        self.state_pause = pause
     
     def load_image(self, name, colorkey=None) -> pygame.image:
         image = pygame.image.load(name)
@@ -62,8 +67,12 @@ class Saw_Damage(pygame.sprite.Sprite):
         self.rect.x = x
         self.rect.y = y
         self.STATUS = 'SUPPORT_WEAPON'
-    
+        self.state_pause = False
+        
     def damage(self) -> None:
+        if self.state_pause:
+            return
+        
         robots = pygame.sprite.spritecollide(self, [s for s in self.all_sprites if s.get_status() == 'PLAYER'], False, pygame.sprite.collide_mask)
         
         if not robots:
@@ -74,6 +83,9 @@ class Saw_Damage(pygame.sprite.Sprite):
     
     def get_status(self) -> str:
         return self.STATUS
+    
+    def pause(self, pause: bool) -> None:
+        self.state_pause = pause
     
     def load_image(self, name, colorkey=None) -> pygame.image:
         image = pygame.image.load(name)

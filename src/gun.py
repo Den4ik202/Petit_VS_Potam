@@ -18,15 +18,17 @@ class Gun(pygame.sprite.Sprite):
         self.rect.y = y
         self.STATUS = 'WEAPON'
         self.mode = False
+        self.state_pause = False
         self.angl = angl
         self.last_time = 0
         
     def update(self) -> None:
-        if self.mode:
-            current_time = pygame.time.get_ticks()
-            if current_time - self.last_time >= COOLDOWN_GUN:
-                self.last_time = pygame.time.get_ticks()
-                self.all_sprites.add(Bullet(self.rect.x, self.rect.y, self.angl, self.all_sprites))
+        if self.state_pause or not self.mode:
+            return
+        current_time = pygame.time.get_ticks()
+        if current_time - self.last_time >= COOLDOWN_GUN:
+            self.last_time = pygame.time.get_ticks()
+            self.all_sprites.add(Bullet(self.rect.x, self.rect.y, self.angl, self.all_sprites))
     
     def set_mode(self, state_mode: bool) -> None:
         self.mode = state_mode
@@ -36,6 +38,8 @@ class Gun(pygame.sprite.Sprite):
     def get_status(self) -> str:
         return self.STATUS
     
+    def pause(self, pause: bool) -> None:
+        self.state_pause = pause
         
     def load_image(self, name, colorkey=None) -> pygame.image:
         image = pygame.image.load(name)
@@ -62,9 +66,12 @@ class Bullet(pygame.sprite.Sprite):
         self.rect.x = x
         self.rect.y = y
         self.angl = angl
+        self.state_pause = False
         self.STATUS = 'SUPPORT_WEAPON'
         
     def update(self) -> None:
+        if self.state_pause:
+            return
         self.rect.x += self.angl[0] * SPEED_BULLET
         self.rect.y += self.angl[1] * SPEED_BULLET
 
@@ -79,6 +86,9 @@ class Bullet(pygame.sprite.Sprite):
     
     def get_status(self) -> str:
         return self.STATUS
+    
+    def pause(self, pause: bool) -> None:
+        self.state_pause = pause
     
     def load_image(self, name, colorkey=None) -> pygame.image:
         image = pygame.image.load(name)
