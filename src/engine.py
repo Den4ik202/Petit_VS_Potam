@@ -227,7 +227,7 @@ class Engine:
             if self.play_in_one_PC_button.handle_event(event):
                 self.main_game = True
                 self.pause_button.set_target(
-                    WIDTH-self.pause_button.original_size[0])
+                    WIDTH-2*self.pause_button.original_size[0]//3)
                 self.play_in_one_PC_button.set_target(
                     -self.play_button.original_size[0])
                 self.play_local_inter_burron.set_target(
@@ -385,7 +385,7 @@ class Engine:
             self.screen.blit(text_surface, (WIDTH // 3, 0))
         else:
             self.screen.blit(self.background, (0, 0))
-
+        
         self.all_sprites.update()
         self.all_sprites.draw(self.screen)
 

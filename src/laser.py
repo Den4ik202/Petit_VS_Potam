@@ -66,6 +66,7 @@ class Ray(pygame.sprite.Sprite):
         self.image = self.load_image(os.path.abspath(f'data/weapon/laser/ray_laser_weapon.png'))
         rotate = {(-1, -1): 270+45+22, (1, -1): 270-45-22, (1, 1): 90+45+22, (-1, 1): 45-22}
         self.image = pygame.transform.rotate(self.image, rotate[angl]+180)
+
         self.rect = self.image.get_rect()
         self.mask = pygame.mask.from_surface(self.image)
         self.all_sprites = all_sprites
@@ -73,16 +74,21 @@ class Ray(pygame.sprite.Sprite):
         self.rect.x = x
         self.rect.y = y
         if angl == (1, -1):
-            self.rect.y = y - self.rect.h + 100
-        if angl == (-1, 1):
+            self.rect.x = x + 50
+            self.rect.y = y - self.rect.h + 125
+        elif angl == (-1, 1):
+            self.rect.y = y - 40
+            self.rect.x = x - self.rect.w + 55
+        elif angl == (-1, -1):
+            self.rect.y = y - self.rect.h + 70
             self.rect.x = x - self.rect.w + 100
-        if angl == (-1, -1):
-            self.rect.y = y - self.rect.h + 100
-            self.rect.x = x - self.rect.w + 100
-        
+        else:
+            self.rect.y = y + 15
+            self.rect.x = x + 15
+            
         self.state_pause = False
         self.STATUS = 'SUPPORT_WEAPON'
-        
+
     def damage(self) -> None:
         if self.state_pause:
             return
