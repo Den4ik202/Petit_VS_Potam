@@ -11,8 +11,7 @@ class Disk(pygame.sprite.Sprite):
         self.mask = pygame.mask.from_surface(self.image)
         self.all_sprites = all_sprites
         
-        self.rect.x = x
-        self.rect.y = y
+        self.rect.center = (x, y)
         self.STATUS = 'WEAPON'
         self.mode = False
         self.state_pause = False
@@ -67,6 +66,13 @@ class Saw_Disk(pygame.sprite.Sprite):
         self.rect.center = center
         self.STATUS = 'SUPPORT_WEAPON'
         self.state_pause = False
+        self.last_time = 0
+    
+    def update(self):
+        current_time = pygame.time.get_ticks()
+        if current_time - self.last_time >= 100:
+            self.last_time = current_time
+            self.image = pygame.transform.rotate(self.image, 90)
     
     def damage(self) -> None:
         if self.state_pause:

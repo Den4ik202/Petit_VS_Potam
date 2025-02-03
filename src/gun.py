@@ -7,7 +7,7 @@ class Gun(pygame.sprite.Sprite):
     def __init__(self, x: int, y: int, angl: tuple, all_sprites: pygame.sprite.Group) -> None:
         pygame.sprite.Sprite.__init__(self)
         self.image = self.load_image(os.path.abspath(f'data/weapon/gun/gun_weapon.png'))
-        rotate = {(-1, -1): 270+45, (1, -1): 270-45, (1, 1): 90+45, (-1, 1): 45}
+        rotate = {(-1, -1): 270+45+90, (1, -1): 270-45+90, (1, 1): 90+45+90, (-1, 1): 45+90}
         self.image = pygame.transform.rotate(self.image, rotate[angl])
         
         self.rect = self.image.get_rect()
@@ -68,6 +68,7 @@ class Bullet(pygame.sprite.Sprite):
         self.angl = angl
         self.state_pause = False
         self.STATUS = 'SUPPORT_WEAPON'
+        self.last_time = 0
         
     def update(self) -> None:
         if self.state_pause:
@@ -76,6 +77,11 @@ class Bullet(pygame.sprite.Sprite):
         self.rect.y += self.angl[1] * SPEED_BULLET
 
         robots = pygame.sprite.spritecollide(self, [s for s in self.all_sprites if s.get_status() == 'PLAYER'], False, pygame.sprite.collide_mask)
+
+        current_time = pygame.time.get_ticks()
+        if current_time - self.last_time >= 100:
+            self.last_time = current_time
+            self.image = pygame.transform.rotate(self.image, 90)
         
         if not robots and 0 <= self.rect.x <= WIDTH - self.rect.w and 0 <= self.rect.y <= HEIGHT - self.rect.h:
             return

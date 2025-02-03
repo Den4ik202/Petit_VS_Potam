@@ -65,7 +65,7 @@ class Ray(pygame.sprite.Sprite):
         pygame.sprite.Sprite.__init__(self)
         self.image = self.load_image(os.path.abspath(f'data/weapon/laser/ray_laser_weapon.png'))
         rotate = {(-1, -1): 270+45+22, (1, -1): 270-45-22, (1, 1): 90+45+22, (-1, 1): 45-22}
-        self.image = pygame.transform.rotate(self.image, rotate[angl])
+        self.image = pygame.transform.rotate(self.image, rotate[angl]+180)
         self.rect = self.image.get_rect()
         self.mask = pygame.mask.from_surface(self.image)
         self.all_sprites = all_sprites
