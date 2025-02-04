@@ -6,7 +6,9 @@ import src.settings
 class Robot(pygame.sprite.Sprite):
     def __init__(self, iamgeName: str, all_sprites: pygame.sprite.Group) -> None:
         pygame.sprite.Sprite.__init__(self)
-        self.image = self.load_image(os.path.abspath(f'data/{iamgeName}'))
+        self.original_image = self.load_image(os.path.abspath(f'data/{iamgeName}'))
+        self.image = pygame.transform.rotate(self.original_image, 90)
+        
         self.rect = self.image.get_rect()
         self.mask = pygame.mask.from_surface(self.image)
         self.all_sprites = all_sprites
@@ -17,6 +19,8 @@ class Robot(pygame.sprite.Sprite):
         self.STATUS = 'PLAYER'
             
     def move(self, coef_x: int, coef_y: int, coef_slow: int) -> None:
+        x, y = self.rect.x, self.rect.y
+        
         collision = pygame.sprite.spritecollide(self, [s for s in self.all_sprites if s != self and s.get_status() not in ['SUPPORT_WEAPON', 'SUPPORT']], False, pygame.sprite.collide_mask)
         if collision:
             self.rect.x += src.settings.SPEED * coef_x * coef_slow
@@ -26,12 +30,30 @@ class Robot(pygame.sprite.Sprite):
         self.rect.x += src.settings.SPEED * coef_x * coef_slow
         self.rect.y += src.settings.SPEED * coef_y * coef_slow
         collision = pygame.sprite.spritecollide(self, [s for s in self.all_sprites if s != self and s.get_status() not in ['SUPPORT_WEAPON', 'SUPPORT']], False, pygame.sprite.collide_mask)
+        
         if self.rect.x < 100 or self.rect.x + self.rect.w > 1100 or collision:
             self.rect.x -= src.settings.SPEED * coef_x * coef_slow
         
         if self.rect.y < 100 or self.rect.y + self.rect.h > 700 or collision:
             self.rect.y -= src.settings.SPEED * coef_y * coef_slow
         
+        if x < self.rect.x and y == self.rect.y:
+            self.image = self.original_image
+        elif x > self.rect.x and y == self.rect.y:
+            self.image = pygame.transform.rotate(self.original_image, 180)
+        elif y < self.rect.y and x == self.rect.x:
+            self.image = pygame.transform.rotate(self.original_image, 270)
+        elif y >  self.rect.y and x == self.rect.x:
+            self.image = pygame.transform.rotate(self.original_image, 90)
+        elif x < self.rect.x and y < self.rect.y:
+            self.image = pygame.transform.rotate(self.original_image, 270+45)
+        elif x < self.rect.x and y > self.rect.y:
+            self.image = pygame.transform.rotate(self.original_image, 45)
+        elif x > self.rect.x and y > self.rect.y:
+            self.image = pygame.transform.rotate(self.original_image, 90+45)
+        else:
+            self.image = pygame.transform.rotate(self.original_image, 180+45)            
+
     def get_hp(self) -> int:
         return self.hp
     

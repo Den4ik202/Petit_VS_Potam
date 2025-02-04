@@ -21,7 +21,7 @@ class Disk(pygame.sprite.Sprite):
     def update(self) -> None:
         if self.state_pause or not self.mode:
             return
-        
+
         current_time = pygame.time.get_ticks()
         if current_time - self.last_time >= src.settings.COOLDOWN_DISK:
             self.last_time = pygame.time.get_ticks()

@@ -21,6 +21,7 @@ class Gun(pygame.sprite.Sprite):
         self.state_pause = False
         self.angl = angl
         self.last_time = 0
+        self.sound_push_bullet = pygame.mixer.Sound('sounds\gun.mp3') 
         
     def update(self) -> None:
         if self.state_pause or not self.mode:
@@ -28,6 +29,7 @@ class Gun(pygame.sprite.Sprite):
         current_time = pygame.time.get_ticks()
         if current_time - self.last_time >= src.settings.COOLDOWN_GUN:
             self.last_time = pygame.time.get_ticks()
+            self.sound_push_bullet.play()
             self.all_sprites.add(Bullet(self.rect.x, self.rect.y, self.angl, self.all_sprites))
     
     def set_mode(self, state_mode: bool) -> None:

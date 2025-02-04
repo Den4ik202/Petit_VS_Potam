@@ -90,9 +90,9 @@ class Engine:
         self.back_button.set_target(-self.play_button.original_size[0])
 
         self.play_in_one_PC_button = Button(
-            'play_in_one_PC_button.png', -self.play_button.original_size[0], HEIGHT // 3)
+            'play_in_one_PC_button.png', -self.play_button.original_size[0], HEIGHT // 6)
         self.play_local_inter_burron = Button(
-            'play_local_inter_burron.png', WIDTH, 2 * HEIGHT // 3)
+            'play_local_inter_burron.png', WIDTH, HEIGHT // 2)
         
         self.play_in_one_PC_button.set_target(
             -self.play_button.original_size[0])
@@ -103,7 +103,7 @@ class Engine:
         self.pause_button.set_target(
             WIDTH + self.pause_button.original_size[0])
         
-        self.pause_play_button = Button('pause_play_button.png', -100, HEIGHT // 3)
+        self.pause_play_button = Button('pause_play_button.png', -270, HEIGHT // 3)
         self.pause_play_button.set_target(
             -self.pause_play_button.original_size[0])
         
@@ -111,6 +111,22 @@ class Engine:
         self.pause_home_button.set_target(
             WIDTH + self.pause_home_button.original_size[0])
 
+        self.title_credits = Button('title_credits.png', -750, HEIGHT // 3)
+        self.title_credits.set_target(
+            -self.title_credits.original_size[0])
+        
+        self.title_rules = Button('title_rules.png', -750, HEIGHT // 3)
+        self.title_rules.set_target(
+            -self.title_rules.original_size[0])
+        
+        self.petit_win = Button('petit_win.png', -750, HEIGHT // 10)
+        self.petit_win.set_target(
+            -self.petit_win.original_size[0])
+        
+        self.potam_win = Button('potam_win.png', -750, HEIGHT // 10)
+        self.potam_win.set_target(
+            -self.potam_win.original_size[0])
+        
         self.robot_1_player = Robot('robot_player_1.png', self.all_sprites)
         self.robot_2_player = Robot('robot_player_2.png', self.all_sprites)
 
@@ -129,6 +145,12 @@ class Engine:
         self.all_sprites.add(self.pause_play_button)
         self.all_sprites.add(self.pause_home_button)
 
+        # тайтлы
+        self.all_sprites.add(self.title_credits)
+        self.all_sprites.add(self.title_rules) 
+        self.all_sprites.add(self.petit_win)
+        self.all_sprites.add(self.potam_win)
+             
         # игровые объекты
         self.all_sprites.add(self.robot_1_player)
         self.all_sprites.add(self.robot_2_player)
@@ -168,6 +190,7 @@ class Engine:
             # =========== начало обработок кнопок ============
             if self.play_button.handle_event(event):
                 self.update_settings()
+                
                 self.play_button.set_target(-self.play_button.original_size[0])
                 self.rule_button.set_target(
                     WIDTH + self.rule_button.original_size[0])
@@ -192,6 +215,7 @@ class Engine:
                 self.out_button.set_target(-self.out_button.original_size[0])
 
                 self.back_button.set_target(WIDTH // 2)
+                self.title_rules.set_target(WIDTH // 2)
 
             if self.setting_button.handle_event(event):
                 if os.name == 'nt':  # Для Windows
@@ -221,13 +245,17 @@ class Engine:
                 self.credit_button.set_target(
                     WIDTH + self.credit_button.original_size[0])
                 self.out_button.set_target(-self.out_button.original_size[0])
-
+                
+                self.title_credits.set_target(WIDTH // 2)
                 self.back_button.set_target(WIDTH // 2)
 
             if self.out_button.handle_event(event):
                 self.game_end = True
 
             if self.back_button.handle_event(event):
+                self.title_credits.set_target(-self.title_credits.original_size[0])
+                self.title_rules.set_target(-self.title_rules.original_size[0])
+                
                 self.play_in_one_PC_button.set_target(
                     -self.play_button.original_size[0])
                 self.play_local_inter_burron.set_target(
@@ -250,7 +278,7 @@ class Engine:
                     WIDTH + self.rule_button.original_size[0])
                 self.back_button.set_target(-self.play_button.original_size[0])
                 self.robot_1_player.set_position(200, 200)
-                self.robot_2_player.set_position(100, 100)
+                self.robot_2_player.set_position(600, 600)
 
                 self.last_timer_time = pygame.time.get_ticks()
 
@@ -277,6 +305,8 @@ class Engine:
                 self.credit_button.set_target(WIDTH // 2)
                 self.out_button.set_target(WIDTH // 2)
                 
+                self.petit_win.set_target(-self.petit_win.original_size[0])
+                self.potam_win.set_target(-self.potam_win.original_size[0])
                 self.robot_1_player.set_position(WIDTH, HEIGHT)
                 self.robot_2_player.set_position(WIDTH, HEIGHT)
                 self.pause_button.set_target(WIDTH + self.pause_home_button.original_size[0])
@@ -342,41 +372,62 @@ class Engine:
                 self.set_pause_sprits(True)
                 self.pause_button.set_target(WIDTH + self.pause_home_button.original_size[0])
                 self.pause_home_button.set_target(WIDTH // 2)
+                
+                if self.robot_1_player.get_hp() <= 0:
+                    self.potam_win.set_target(WIDTH // 2)
+                else:
+                    self.petit_win.set_target(WIDTH // 2)
         
     def start_anarxiya(self) -> None:
         for s in self.all_sprites:
             if s.get_status() == 'WEAPON':
                 s.set_mode(True)
+        for sound in self.all_sounds:
+            sound.play()
 
     def stop_anarxiya(self) -> None:
         for s in self.all_sprites:
             if s.get_status() == 'WEAPON':
                 s.set_mode(False)
-
+        for sound in self.all_sounds:
+            sound.stop()
+            
     def create_weapon(self) -> None:
         count_weapon = randint(1, src.settings.MAX_COUNT_WEAPON)
         position = randint(1, 5)
+        self.all_sounds = []
         
+        cnt = 0
         for x, y in src.settings.COORDINATE_DISK[position]:
             if randint(0, 100) <= src.settings.CHANCE_APPEARANCE_DISK:
+                cnt += 1
                 self.all_sprites.add(Disk(x, y, self.all_sprites))
-        count_weapon -= 1
+        if cnt:
+            self.all_sounds.append(pygame.mixer.Sound('sounds\disk.mp3'))
+            count_weapon -= 1
 
         if not count_weapon:  # больше нельзя ставить
             return self.create_dirt()
-
+        
+        cnt = 0
         for x, y, angl in src.settings.COORDINATE_GUN:
             if randint(0, 100) <= src.settings.CHANCE_APPEARANCE_GUN:
+                cnt += 1
                 self.all_sprites.add(Gun(x, y, angl, self.all_sprites))
-        count_weapon -= 1
+        if cnt:
+            count_weapon -= 1
 
         if not count_weapon:  # больше нельзя ставить
             return self.create_dirt()
 
+        cnt = 0
         for x, y, angl in src.settings.COORDINATE_LASER:
             if randint(0, 100) <= src.settings.CHANCE_APPEARANCE_LASER:
+                cnt += 1
                 self.all_sprites.add(Laser(x, y, angl, self.all_sprites))
-        count_weapon -= 1
+        if cnt:
+            self.all_sounds.append(pygame.mixer.Sound('sounds\laser.mp3'))
+            count_weapon -= 1
 
         self.create_dirt()
 
@@ -390,6 +441,8 @@ class Engine:
             if s.get_status() in sprite_kill:
                 pass
                 s.kill()
+        for sound in self.all_sounds:
+            sound.stop()
 
     def set_pause_sprits(self, state_pause: bool) -> None:
         for sprite in self.all_sprites:
@@ -423,9 +476,9 @@ class Engine:
         """"""
         if self.main_game:
             self.screen.blit(self.field_game, (0, 0))
-            text_surface = self.font_text.render(
-                f'{self.robot_1_player.get_hp()} {self.robot_2_player.get_hp()}', False, (0, 0, 0))
-            self.screen.blit(text_surface, (src.settings.WIDTH // 3, 0))
+            # text_surface = self.font_text.render(
+            #     f'{self.robot_1_player.get_hp()} {self.robot_2_player.get_hp()}', False, (0, 0, 0))
+            # self.screen.blit(text_surface, (src.settings.WIDTH // 3, 0))
         else:
             self.screen.blit(self.background, (0, 0))
         
@@ -437,7 +490,9 @@ class Engine:
     def run(self) -> None:
         pygame.init()
         pygame.display.set_caption(self.title)
-
+        self.main_sound = pygame.mixer.Sound('sounds\main.mp3') 
+        self.main_sound.play(5)
+        
         while not self.game_end:
             self.__check_events()
             self.__check_logic()
