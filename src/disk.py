@@ -1,6 +1,6 @@
 import pygame
 import os
-from src.settings import *
+import src.settings
 
 
 class Disk(pygame.sprite.Sprite):
@@ -23,7 +23,7 @@ class Disk(pygame.sprite.Sprite):
             return
         
         current_time = pygame.time.get_ticks()
-        if current_time - self.last_time >= COOLDOWN_DISK:
+        if current_time - self.last_time >= src.settings.COOLDOWN_DISK:
             self.last_time = pygame.time.get_ticks()
             self.saw_disk.damage()
         
@@ -83,7 +83,7 @@ class Saw_Disk(pygame.sprite.Sprite):
             return
         
         for robot in robots:
-            robot.damage(DAMAGE_DISK)
+            robot.damage(src.settings.DAMAGE_DISK)
     
     def get_status(self) -> str:
         return self.STATUS

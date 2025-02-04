@@ -1,7 +1,5 @@
 import pygame
 import os
-from src.settings import *
-
 
 class Dirt(pygame.sprite.Sprite):
     def __init__(self, x: int, y: int) -> None:

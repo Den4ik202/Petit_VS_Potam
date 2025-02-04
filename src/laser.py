@@ -1,6 +1,6 @@
 import pygame
 import os
-from src.settings import *
+import src.settings
 
 
 class Laser(pygame.sprite.Sprite):
@@ -27,7 +27,7 @@ class Laser(pygame.sprite.Sprite):
             return
         
         current_time = pygame.time.get_ticks()
-        if current_time - self.last_time >= COOLDOWN_LASER:
+        if current_time - self.last_time >= src.settings.COOLDOWN_LASER:
             self.last_time = pygame.time.get_ticks()
             self.laser.damage()
         
@@ -98,7 +98,7 @@ class Ray(pygame.sprite.Sprite):
             return
         
         for robot in robots:
-            robot.damage(DAMAGE_LASER)
+            robot.damage(src.settings.DAMAGE_LASER)
     
     def get_status(self) -> str:
         return self.STATUS

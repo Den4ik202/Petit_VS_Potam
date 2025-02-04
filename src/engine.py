@@ -7,7 +7,7 @@ from random import randint
 import pygame
 import os
 
-from src.settings import *
+import src.settings
 from src.button import Button
 from src.robot import Robot
 from src.saw import Saw
@@ -55,9 +55,12 @@ class Engine:
 
     def __init__(self) -> None:
         """"""
+        WIDTH = src.settings.WIDTH
+        HEIGHT = src.settings.HEIGHT
+        
         self.screen = pygame.display.set_mode((WIDTH, HEIGHT))
         self.clock = pygame.time.Clock()
-
+        
         self.title = "PetitPotam"
         self.game_end = False
         self.main_game = False  # старт главной игры
@@ -72,6 +75,7 @@ class Engine:
         self.all_sprites = pygame.sprite.Group()
         # настройка шрифта
         pygame.font.init()
+        
         self.font_text = pygame.font.SysFont('Comic Sans MS', 30)
 
         # инцилизация всех кнопок
@@ -153,12 +157,17 @@ class Engine:
 
     def __check_events(self) -> None:
         """"""
+        WIDTH = src.settings.WIDTH
+        HEIGHT = src.settings.HEIGHT
+        SLOWING_SPEED = src.settings.SLOWING_SPEED
+        
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 self.game_end = True
 
             # =========== начало обработок кнопок ============
             if self.play_button.handle_event(event):
+                self.update_settings()
                 self.play_button.set_target(-self.play_button.original_size[0])
                 self.rule_button.set_target(
                     WIDTH + self.rule_button.original_size[0])
@@ -185,6 +194,13 @@ class Engine:
                 self.back_button.set_target(WIDTH // 2)
 
             if self.setting_button.handle_event(event):
+                if os.name == 'nt':  # Для Windows
+                    os.startfile('settings.txt')
+                elif os.name == 'posix':  # Для Linux/MacOS
+                    os.system(f'xdg-open settings.txt')  # Для Linux
+                else:
+                    os.system(f'open settings.txt')
+                
                 self.play_button.set_target(-self.play_button.original_size[0])
                 self.rule_button.set_target(
                     WIDTH + self.rule_button.original_size[0])
@@ -287,6 +303,10 @@ class Engine:
                     SLOWING_SPEED if colision_robot_2 else 1)
 
     def __check_logic(self) -> None:
+        TIMER_INTERVAL = src.settings.TIMER_INTERVAL
+        TIMER_SEE = src.settings.TIMER_SEE
+        WIDTH = src.settings.WIDTH
+                
         """"""
         if not self.main_game or self.pause_game:
             return
@@ -334,34 +354,34 @@ class Engine:
                 s.set_mode(False)
 
     def create_weapon(self) -> None:
-        count_weapon = randint(1, MAX_COUNT_WEAPON)
+        count_weapon = randint(1, src.settings.MAX_COUNT_WEAPON)
         position = randint(1, 5)
         
-        for x, y in COORDINATE_DISK[position]:
-            if randint(0, 100) <= CHANCE_APPEARANCE_DISK:
+        for x, y in src.settings.COORDINATE_DISK[position]:
+            if randint(0, 100) <= src.settings.CHANCE_APPEARANCE_DISK:
                 self.all_sprites.add(Disk(x, y, self.all_sprites))
         count_weapon -= 1
 
         if not count_weapon:  # больше нельзя ставить
             return self.create_dirt()
 
-        for x, y, angl in COORDINATE_GUN:
-            if randint(0, 100) <= CHANCE_APPEARANCE_GUN:
+        for x, y, angl in src.settings.COORDINATE_GUN:
+            if randint(0, 100) <= src.settings.CHANCE_APPEARANCE_GUN:
                 self.all_sprites.add(Gun(x, y, angl, self.all_sprites))
         count_weapon -= 1
 
         if not count_weapon:  # больше нельзя ставить
             return self.create_dirt()
 
-        for x, y, angl in COORDINATE_LASER:
-            if randint(0, 100) <= CHANCE_APPEARANCE_LASER:
+        for x, y, angl in src.settings.COORDINATE_LASER:
+            if randint(0, 100) <= src.settings.CHANCE_APPEARANCE_LASER:
                 self.all_sprites.add(Laser(x, y, angl, self.all_sprites))
         count_weapon -= 1
 
         self.create_dirt()
 
     def create_dirt(self) -> None:
-        count_dirt = randint(0, MAX_COUNT_DIRT)
+        count_dirt = randint(0, src.settings.MAX_COUNT_DIRT)
         for _ in range(count_dirt):
             self.all_sprites.add(Dirt(randint(200, 800), randint(200, 500)))
 
@@ -376,13 +396,36 @@ class Engine:
             if sprite.get_status() in ['WEAPON', 'SUPPORT_WEAPON']:
                 sprite.pause(state_pause)
 
+    def update_settings(self) -> None:         # обновление настроек
+        with open('settings.txt', 'r', encoding='UTF-8') as file:
+            all_line = tuple(map(lambda s: float(s.split()[-1].rstrip()), file.readlines()))
+            src.settings.FPS = all_line[0]
+            src.settings.TIMER_INTERVAL = all_line[1]
+            src.settings.TIMER_SEE = all_line[2]
+            src.settings.MAX_COUNT_WEAPON = all_line[3]
+            src.settings.MAX_COUNT_DIRT = all_line[4]
+            src.settings.SPEED = all_line[5]
+            src.settings.HP = all_line[6]
+            src.settings.SLOWING_SPEED = all_line[7]
+            src.settings.DAMAGE_GUN = all_line[8]
+            src.settings.SPEED_BULLET = all_line[9]
+            src.settings.COOLDOWN_GUN = all_line[10]
+            src.settings.CHANCE_APPEARANCE_GUN = all_line[11]
+            src.settings.DAMAGE_LASER = all_line[12]
+            src.settings.COOLDOWN_LASER = all_line[13]
+            src.settings.CHANCE_APPEARANCE_LASER = all_line[14]
+            src.settings.DAMAGE_DISK = all_line[15]
+            src.settings.COOLDOWN_DISK = all_line[16]
+            src.settings.CHANCE_APPEARANCE_DISK = all_line[17]
+            
+            
     def __draw(self) -> None:
         """"""
         if self.main_game:
             self.screen.blit(self.field_game, (0, 0))
             text_surface = self.font_text.render(
                 f'{self.robot_1_player.get_hp()} {self.robot_2_player.get_hp()}', False, (0, 0, 0))
-            self.screen.blit(text_surface, (WIDTH // 3, 0))
+            self.screen.blit(text_surface, (src.settings.WIDTH // 3, 0))
         else:
             self.screen.blit(self.background, (0, 0))
         
@@ -399,4 +442,4 @@ class Engine:
             self.__check_events()
             self.__check_logic()
             self.__draw()
-            self.clock.tick(FPS)
+            self.clock.tick(src.settings.FPS)
