@@ -57,10 +57,10 @@ class Engine:
         """"""
         WIDTH = src.settings.WIDTH
         HEIGHT = src.settings.HEIGHT
-        
+
         self.screen = pygame.display.set_mode((WIDTH, HEIGHT))
         self.clock = pygame.time.Clock()
-        
+
         self.title = "PetitPotam"
         self.game_end = False
         self.main_game = False  # старт главной игры
@@ -75,7 +75,7 @@ class Engine:
         self.all_sprites = pygame.sprite.Group()
         # настройка шрифта
         pygame.font.init()
-        
+
         self.font_text = pygame.font.SysFont('Comic Sans MS', 30)
 
         # инцилизация всех кнопок
@@ -93,40 +93,42 @@ class Engine:
             'play_in_one_PC_button.png', -self.play_button.original_size[0], HEIGHT // 6)
         self.play_local_inter_burron = Button(
             'play_local_inter_burron.png', WIDTH, HEIGHT // 2)
-        
+
         self.play_in_one_PC_button.set_target(
             -self.play_button.original_size[0])
         self.play_local_inter_burron.set_target(
             WIDTH + self.play_button.original_size[0])
-        
+
         self.pause_button = Button('pause_button.png', WIDTH, 0)
         self.pause_button.set_target(
             WIDTH + self.pause_button.original_size[0])
-        
-        self.pause_play_button = Button('pause_play_button.png', -270, HEIGHT // 3)
+
+        self.pause_play_button = Button(
+            'pause_play_button.png', -270, HEIGHT // 3)
         self.pause_play_button.set_target(
             -self.pause_play_button.original_size[0])
-        
-        self.pause_home_button = Button('pause_home_button.png', WIDTH, 2 * HEIGHT // 3)
+
+        self.pause_home_button = Button(
+            'pause_home_button.png', WIDTH, 2 * HEIGHT // 3)
         self.pause_home_button.set_target(
             WIDTH + self.pause_home_button.original_size[0])
 
         self.title_credits = Button('title_credits.png', -750, HEIGHT // 3)
         self.title_credits.set_target(
             -self.title_credits.original_size[0])
-        
+
         self.title_rules = Button('title_rules.png', -750, HEIGHT // 3)
         self.title_rules.set_target(
             -self.title_rules.original_size[0])
-        
+
         self.petit_win = Button('petit_win.png', -750, HEIGHT // 10)
         self.petit_win.set_target(
             -self.petit_win.original_size[0])
-        
+
         self.potam_win = Button('potam_win.png', -750, HEIGHT // 10)
         self.potam_win.set_target(
             -self.potam_win.original_size[0])
-        
+
         self.robot_1_player = Robot('robot_player_1.png', self.all_sprites)
         self.robot_2_player = Robot('robot_player_2.png', self.all_sprites)
 
@@ -147,10 +149,10 @@ class Engine:
 
         # тайтлы
         self.all_sprites.add(self.title_credits)
-        self.all_sprites.add(self.title_rules) 
+        self.all_sprites.add(self.title_rules)
         self.all_sprites.add(self.petit_win)
         self.all_sprites.add(self.potam_win)
-             
+
         # игровые объекты
         self.all_sprites.add(self.robot_1_player)
         self.all_sprites.add(self.robot_2_player)
@@ -182,7 +184,7 @@ class Engine:
         WIDTH = src.settings.WIDTH
         HEIGHT = src.settings.HEIGHT
         SLOWING_SPEED = src.settings.SLOWING_SPEED
-        
+
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 self.game_end = True
@@ -190,7 +192,7 @@ class Engine:
             # =========== начало обработок кнопок ============
             if self.play_button.handle_event(event):
                 self.update_settings()
-                
+
                 self.play_button.set_target(-self.play_button.original_size[0])
                 self.rule_button.set_target(
                     WIDTH + self.rule_button.original_size[0])
@@ -224,7 +226,7 @@ class Engine:
                     os.system(f'xdg-open settings.txt')  # Для Linux
                 else:
                     os.system(f'open settings.txt')
-                
+
                 self.play_button.set_target(-self.play_button.original_size[0])
                 self.rule_button.set_target(
                     WIDTH + self.rule_button.original_size[0])
@@ -245,7 +247,7 @@ class Engine:
                 self.credit_button.set_target(
                     WIDTH + self.credit_button.original_size[0])
                 self.out_button.set_target(-self.out_button.original_size[0])
-                
+
                 self.title_credits.set_target(WIDTH // 2)
                 self.back_button.set_target(WIDTH // 2)
 
@@ -253,9 +255,10 @@ class Engine:
                 self.game_end = True
 
             if self.back_button.handle_event(event):
-                self.title_credits.set_target(-self.title_credits.original_size[0])
+                self.title_credits.set_target(
+                    -self.title_credits.original_size[0])
                 self.title_rules.set_target(-self.title_rules.original_size[0])
-                
+
                 self.play_in_one_PC_button.set_target(
                     -self.play_button.original_size[0])
                 self.play_local_inter_burron.set_target(
@@ -287,13 +290,15 @@ class Engine:
                 self.set_pause_sprits(True)
                 self.pause_play_button.set_target(WIDTH // 2)
                 self.pause_home_button.set_target(WIDTH // 2)
-            
+
             if self.pause_play_button.handle_event(event):
                 self.pause_game = False
                 self.set_pause_sprits(False)
-                self.pause_play_button.set_target(-self.pause_play_button.original_size[0])
-                self.pause_home_button.set_target(WIDTH + self.pause_home_button.original_size[0])
-            
+                self.pause_play_button.set_target(
+                    -self.pause_play_button.original_size[0])
+                self.pause_home_button.set_target(
+                    WIDTH + self.pause_home_button.original_size[0])
+
             if self.pause_home_button.handle_event(event):
                 self.pause_game = False
                 self.set_pause_sprits(False)
@@ -304,14 +309,17 @@ class Engine:
                 self.setting_button.set_target(WIDTH // 2)
                 self.credit_button.set_target(WIDTH // 2)
                 self.out_button.set_target(WIDTH // 2)
-                
+
                 self.petit_win.set_target(-self.petit_win.original_size[0])
                 self.potam_win.set_target(-self.potam_win.original_size[0])
                 self.robot_1_player.set_position(WIDTH, HEIGHT)
                 self.robot_2_player.set_position(WIDTH, HEIGHT)
-                self.pause_button.set_target(WIDTH + self.pause_home_button.original_size[0])
-                self.pause_play_button.set_target(-self.pause_play_button.original_size[0])
-                self.pause_home_button.set_target(WIDTH + self.pause_home_button.original_size[0])
+                self.pause_button.set_target(
+                    WIDTH + self.pause_home_button.original_size[0])
+                self.pause_play_button.set_target(
+                    -self.pause_play_button.original_size[0])
+                self.pause_home_button.set_target(
+                    WIDTH + self.pause_home_button.original_size[0])
             # ====================== клавиатура ==================================
 
         if self.main_game and not self.pause_game:   # движение
@@ -336,7 +344,7 @@ class Engine:
         TIMER_INTERVAL = src.settings.TIMER_INTERVAL
         TIMER_SEE = src.settings.TIMER_SEE
         WIDTH = src.settings.WIDTH
-                
+
         """"""
         if not self.main_game or self.pause_game:
             return
@@ -368,16 +376,17 @@ class Engine:
 
         # ==================== ПРОВЕРКА НА ПРОИГРЫШ =====================
         if self.robot_1_player.get_hp() <= 0 or self.robot_2_player.get_hp() <= 0:
-                self.pause_game = True
-                self.set_pause_sprits(True)
-                self.pause_button.set_target(WIDTH + self.pause_home_button.original_size[0])
-                self.pause_home_button.set_target(WIDTH // 2)
-                
-                if self.robot_1_player.get_hp() <= 0:
-                    self.potam_win.set_target(WIDTH // 2)
-                else:
-                    self.petit_win.set_target(WIDTH // 2)
-        
+            self.pause_game = True
+            self.set_pause_sprits(True)
+            self.pause_button.set_target(
+                WIDTH + self.pause_home_button.original_size[0])
+            self.pause_home_button.set_target(WIDTH // 2)
+
+            if self.robot_1_player.get_hp() <= 0:
+                self.potam_win.set_target(WIDTH // 2)
+            else:
+                self.petit_win.set_target(WIDTH // 2)
+
     def start_anarxiya(self) -> None:
         for s in self.all_sprites:
             if s.get_status() == 'WEAPON':
@@ -391,12 +400,12 @@ class Engine:
                 s.set_mode(False)
         for sound in self.all_sounds:
             sound.stop()
-            
+
     def create_weapon(self) -> None:
         count_weapon = randint(1, src.settings.MAX_COUNT_WEAPON)
         position = randint(1, 5)
         self.all_sounds = []
-        
+
         cnt = 0
         for x, y in src.settings.COORDINATE_DISK[position]:
             if randint(0, 100) <= src.settings.CHANCE_APPEARANCE_DISK:
@@ -408,7 +417,7 @@ class Engine:
 
         if not count_weapon:  # больше нельзя ставить
             return self.create_dirt()
-        
+
         cnt = 0
         for x, y, angl in src.settings.COORDINATE_GUN:
             if randint(0, 100) <= src.settings.CHANCE_APPEARANCE_GUN:
@@ -451,7 +460,8 @@ class Engine:
 
     def update_settings(self) -> None:         # обновление настроек
         with open('settings.txt', 'r', encoding='UTF-8') as file:
-            all_line = tuple(map(lambda s: float(s.split()[-1].rstrip()), file.readlines()))
+            all_line = tuple(
+                map(lambda s: float(s.split()[-1].rstrip()), file.readlines()))
             src.settings.FPS = all_line[0]
             src.settings.TIMER_INTERVAL = all_line[1]
             src.settings.TIMER_SEE = all_line[2]
@@ -470,15 +480,14 @@ class Engine:
             src.settings.DAMAGE_DISK = all_line[15]
             src.settings.COOLDOWN_DISK = all_line[16]
             src.settings.CHANCE_APPEARANCE_DISK = all_line[17]
-            
-            
+
     def __draw(self) -> None:
         """"""
         if self.main_game:
             self.screen.blit(self.field_game, (0, 0))
         else:
             self.screen.blit(self.background, (0, 0))
-        
+
         self.all_sprites.update()
         self.all_sprites.draw(self.screen)
 
@@ -487,9 +496,9 @@ class Engine:
     def run(self) -> None:
         pygame.init()
         pygame.display.set_caption(self.title)
-        self.main_sound = pygame.mixer.Sound('sounds\main.mp3') 
+        self.main_sound = pygame.mixer.Sound('sounds\main.mp3')
         self.main_sound.play(5)
-        
+
         while not self.game_end:
             self.__check_events()
             self.__check_logic()
