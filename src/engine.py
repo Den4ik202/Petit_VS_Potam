@@ -476,9 +476,6 @@ class Engine:
         """"""
         if self.main_game:
             self.screen.blit(self.field_game, (0, 0))
-            # text_surface = self.font_text.render(
-            #     f'{self.robot_1_player.get_hp()} {self.robot_2_player.get_hp()}', False, (0, 0, 0))
-            # self.screen.blit(text_surface, (src.settings.WIDTH // 3, 0))
         else:
             self.screen.blit(self.background, (0, 0))
         
