@@ -1,25 +1,22 @@
 import pygame
 import os
-from src.settings import *
 
 
-class Robot(pygame.sprite.Sprite):
-    def __init__(self, iamgeName: str, x: int, y: int) -> None:
+class Dirt(pygame.sprite.Sprite):
+    def __init__(self, x: int, y: int) -> None:
         pygame.sprite.Sprite.__init__(self)
-        self.image = self.load_image(os.path.abspath(f'data/{iamgeName}'))
+        self.image = self.load_image(
+            os.path.abspath(f'data/dirt/dirt_weapon.png'))
         self.rect = self.image.get_rect()
+        self.mask = pygame.mask.from_surface(self.image)
 
         self.rect.x = x
         self.rect.y = y
-        self.hp = HP
-        
-    def update(self) -> None:
-        mouse_x, mouse_y = pygame.mouse.get_pos()
-        
-    def move(self, coef_x: bool, coef_y: bool) -> None:
-        self.rect.x += SPEED * int(coef_x)
-        self.rect.y += SPEED * int(coef_y)
-    
+        self.STATUS = 'SUPPORT'
+
+    def get_status(self) -> str:
+        return self.STATUS
+
     def load_image(self, name, colorkey=None) -> pygame.image:
         image = pygame.image.load(name)
 

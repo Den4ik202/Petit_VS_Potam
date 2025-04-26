@@ -64,6 +64,7 @@ class Engine:
         self.setting_button = Button('setting_button.png', 0,  HEIGHT // 2)
         self.credit_button = Button('credits_button.png', WIDTH, 2 * HEIGHT // 3)
         self.out_button = Button('out_button.png', 0, 5 * HEIGHT // 6)
+        self.exit_button = Button('exit_button.png', 0, 5 * HEIGHT // 6)
         
         self.play_in_one_PC_button = Button('play_in_one_PC_button.png', -self.play_button.original_size[0], HEIGHT // 3)
         self.play_local_inter_burron = Button('play_local_inter_burron.png', WIDTH, 2 * HEIGHT // 3)
